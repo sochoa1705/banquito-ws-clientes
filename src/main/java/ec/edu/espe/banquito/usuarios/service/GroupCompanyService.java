@@ -8,12 +8,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import ec.edu.espe.banquito.usuarios.model.Customer;
-import ec.edu.espe.banquito.usuarios.model.CustomerAddress;
-import ec.edu.espe.banquito.usuarios.model.CustomerPhone;
 import ec.edu.espe.banquito.usuarios.model.GroupCompany;
 import ec.edu.espe.banquito.usuarios.model.GroupCompanyMember;
-import ec.edu.espe.banquito.usuarios.model.GroupCompanyMemberPK;
 import ec.edu.espe.banquito.usuarios.repository.GroupCompanyRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
