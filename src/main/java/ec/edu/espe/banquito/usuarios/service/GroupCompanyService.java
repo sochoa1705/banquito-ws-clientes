@@ -29,20 +29,20 @@ public class GroupCompanyService {
     }
 
     public List<GroupCompany> getGroupCompaniesByBranchAndLocationAndState(
-            Integer branch, 
+            Integer branch,
             Integer location,
             String status) {
         return groupCompanyRepository.findByBranchIdAndLocationIdAndState(branch, location, status);
     }
 
     public List<GroupCompany> getGroupCompaniesByBranchAndLocation(
-            Integer branch, 
+            Integer branch,
             Integer location) {
         return groupCompanyRepository.findByBranchIdAndLocationId(branch, location);
     }
 
     public List<GroupCompany> getGroupCompaniesByBranchAndState(
-            Integer branch, 
+            Integer branch,
             String status) {
         return groupCompanyRepository.findByBranchIdAndState(branch, status);
     }
@@ -70,12 +70,12 @@ public class GroupCompanyService {
 
         for (GroupCompanyMember gpMembers : newGroupCompany.getGroupCompanyMembers()) {
             GroupCompanyMember member = GroupCompanyMember.builder()
-                        .PK(gpMembers.getPK())
-                        .groupRole(gpMembers.getGroupRole())
-                        .customer(gpMembers.getCustomer())
-                        .state("ACT")
-                        .creationDate(new Date())
-                        .build();
+                    .PK(gpMembers.getPK())
+                    .groupRole(gpMembers.getGroupRole())
+                    .customer(gpMembers.getCustomer())
+                    .state("ACT")
+                    .creationDate(new Date())
+                    .build();
 
             members.add(member);
         }
@@ -102,122 +102,130 @@ public class GroupCompanyService {
 
     }
 
-    //  @Transactional
+    // @Transactional
     // public GroupCompany update(GroupCompany groupCompany) {
-    //     Optional<GroupCompany> groupCompanyOpt = groupCompanyRepository.findById(groupCompany.getPK());
+    // Optional<GroupCompany> groupCompanyOpt =
+    // groupCompanyRepository.findById(groupCompany.getPK());
 
-    //     if (groupCompanyOpt.isPresent()) {
-    //         GroupCompany groupCompanyTmp = groupCompanyOpt.get();
+    // if (groupCompanyOpt.isPresent()) {
+    // GroupCompany groupCompanyTmp = groupCompanyOpt.get();
 
-    //         if (!customerTmp.getEmailAddress().equals(customer.getEmailAddress())) {
-    //             Customer emailInUse = customerRepository.findByEmailAddress(customer.getEmailAddress());
+    // if (!customerTmp.getEmailAddress().equals(customer.getEmailAddress())) {
+    // Customer emailInUse =
+    // customerRepository.findByEmailAddress(customer.getEmailAddress());
 
-    //             if (emailInUse != null) {
-    //                 throw new RuntimeException("El correo electrónico ya se encuentra en uso");
-    //             }
-    //         }
+    // if (emailInUse != null) {
+    // throw new RuntimeException("El correo electrónico ya se encuentra en uso");
+    // }
+    // }
 
-    //         List<CustomerPhone> customerPhones = new ArrayList<>();
-    //         List<CustomerAddress> customerAddresses = new ArrayList<>();
+    // List<CustomerPhone> customerPhones = new ArrayList<>();
+    // List<CustomerAddress> customerAddresses = new ArrayList<>();
 
-    //         for (CustomerPhone newPhoneData : customer.getPhones()) {
-    //             if (newPhoneData.getId() != null) {
-    //                 Optional<CustomerPhone> existingPhoneOpt = customerPhoneRepository.findById(newPhoneData.getId());
-    //                 if (!existingPhoneOpt.isPresent()) {
-    //                     throw new RuntimeException("Telefono con ID " + newPhoneData.getId() + " no existente");
-    //                 }
+    // for (CustomerPhone newPhoneData : customer.getPhones()) {
+    // if (newPhoneData.getId() != null) {
+    // Optional<CustomerPhone> existingPhoneOpt =
+    // customerPhoneRepository.findById(newPhoneData.getId());
+    // if (!existingPhoneOpt.isPresent()) {
+    // throw new RuntimeException("Telefono con ID " + newPhoneData.getId() + " no
+    // existente");
+    // }
 
-    //                 CustomerPhone existingPhone = existingPhoneOpt.get();
+    // CustomerPhone existingPhone = existingPhoneOpt.get();
 
-    //                 CustomerPhone existsPhoneNumber = customerPhoneRepository
-    //                         .findByCustomerIdAndPhoneNumber(customer.getId(), newPhoneData.getPhoneNumber());
-    //                 if (existsPhoneNumber != null && !existsPhoneNumber.getId().equals(newPhoneData.getId())) {
-    //                     throw new RuntimeException("El telefono ya se encuentra en uso");
-    //                 }
+    // CustomerPhone existsPhoneNumber = customerPhoneRepository
+    // .findByCustomerIdAndPhoneNumber(customer.getId(),
+    // newPhoneData.getPhoneNumber());
+    // if (existsPhoneNumber != null &&
+    // !existsPhoneNumber.getId().equals(newPhoneData.getId())) {
+    // throw new RuntimeException("El telefono ya se encuentra en uso");
+    // }
 
-    //                 existingPhone.setPhoneType(newPhoneData.getPhoneType());
-    //                 existingPhone.setPhoneNumber(newPhoneData.getPhoneNumber());
-    //                 existingPhone.setIsDefault(newPhoneData.getIsDefault());
-    //                 customerPhones.add(existingPhone);
-    //             } else {
-    //                 CustomerPhone phoneInUse = customerPhoneRepository.findByPhoneNumber(newPhoneData.getPhoneNumber());
-    //                 if (phoneInUse != null) {
-    //                     throw new RuntimeException("El telefono ya se encuentra en uso");
-    //                 }
+    // existingPhone.setPhoneType(newPhoneData.getPhoneType());
+    // existingPhone.setPhoneNumber(newPhoneData.getPhoneNumber());
+    // existingPhone.setIsDefault(newPhoneData.getIsDefault());
+    // customerPhones.add(existingPhone);
+    // } else {
+    // CustomerPhone phoneInUse =
+    // customerPhoneRepository.findByPhoneNumber(newPhoneData.getPhoneNumber());
+    // if (phoneInUse != null) {
+    // throw new RuntimeException("El telefono ya se encuentra en uso");
+    // }
 
-    //                 CustomerPhone newPhone = CustomerPhone.builder()
-    //                         .customerId(customer.getId())
-    //                         .phoneType(newPhoneData.getPhoneType())
-    //                         .phoneNumber(newPhoneData.getPhoneNumber())
-    //                         .isDefault(newPhoneData.getIsDefault())
-    //                         .build();
+    // CustomerPhone newPhone = CustomerPhone.builder()
+    // .customerId(customer.getId())
+    // .phoneType(newPhoneData.getPhoneType())
+    // .phoneNumber(newPhoneData.getPhoneNumber())
+    // .isDefault(newPhoneData.getIsDefault())
+    // .build();
 
-    //                 customerPhones.add(newPhone);
-    //             }
-    //         }
+    // customerPhones.add(newPhone);
+    // }
+    // }
 
-    //         for (CustomerAddress newAddressData : customer.getAddresses()) {
-    //             if (newAddressData.getId() != null) {
-    //                 Optional<CustomerAddress> existingAddressOpt = customerAddressRepository
-    //                         .findById(newAddressData.getId());
-    //                 if (existingAddressOpt.isPresent()) {
-    //                     CustomerAddress existingAddress = existingAddressOpt.get();
-    //                     existingAddress.setLocationId(newAddressData.getLocationId());
-    //                     existingAddress.setTypeAddress(newAddressData.getTypeAddress());
-    //                     existingAddress.setLine1(newAddressData.getLine1());
-    //                     existingAddress.setLine2(newAddressData.getLine2());
-    //                     existingAddress.setLatitude(newAddressData.getLatitude());
-    //                     existingAddress.setLongitude(newAddressData.getLongitude());
-    //                     existingAddress.setIsDefault(newAddressData.getIsDefault());
-    //                     existingAddress.setState(newAddressData.getState());
-    //                     customerAddresses.add(existingAddress);
-    //                 } else {
-    //                     throw new RuntimeException("Direccion con ID " + newAddressData.getId() + " no existente");
-    //                 }
-    //             } else {
-    //                 CustomerAddress newAddress = CustomerAddress.builder()
-    //                         .customerId(customer.getId())
-    //                         .locationId(newAddressData.getLocationId())
-    //                         .typeAddress(newAddressData.getTypeAddress())
-    //                         .line1(newAddressData.getLine1())
-    //                         .line2(newAddressData.getLine2())
-    //                         .latitude(newAddressData.getLatitude())
-    //                         .longitude(newAddressData.getLongitude())
-    //                         .isDefault(newAddressData.getIsDefault())
-    //                         .state(newAddressData.getState())
-    //                         .build();
+    // for (CustomerAddress newAddressData : customer.getAddresses()) {
+    // if (newAddressData.getId() != null) {
+    // Optional<CustomerAddress> existingAddressOpt = customerAddressRepository
+    // .findById(newAddressData.getId());
+    // if (existingAddressOpt.isPresent()) {
+    // CustomerAddress existingAddress = existingAddressOpt.get();
+    // existingAddress.setLocationId(newAddressData.getLocationId());
+    // existingAddress.setTypeAddress(newAddressData.getTypeAddress());
+    // existingAddress.setLine1(newAddressData.getLine1());
+    // existingAddress.setLine2(newAddressData.getLine2());
+    // existingAddress.setLatitude(newAddressData.getLatitude());
+    // existingAddress.setLongitude(newAddressData.getLongitude());
+    // existingAddress.setIsDefault(newAddressData.getIsDefault());
+    // existingAddress.setState(newAddressData.getState());
+    // customerAddresses.add(existingAddress);
+    // } else {
+    // throw new RuntimeException("Direccion con ID " + newAddressData.getId() + "
+    // no existente");
+    // }
+    // } else {
+    // CustomerAddress newAddress = CustomerAddress.builder()
+    // .customerId(customer.getId())
+    // .locationId(newAddressData.getLocationId())
+    // .typeAddress(newAddressData.getTypeAddress())
+    // .line1(newAddressData.getLine1())
+    // .line2(newAddressData.getLine2())
+    // .latitude(newAddressData.getLatitude())
+    // .longitude(newAddressData.getLongitude())
+    // .isDefault(newAddressData.getIsDefault())
+    // .state(newAddressData.getState())
+    // .build();
 
-    //                 customerAddresses.add(newAddress);
-    //             }
-    //         }
+    // customerAddresses.add(newAddress);
+    // }
+    // }
 
-    //         customerTmp.setBranchId(customer.getBranchId());
-    //         customerTmp.setFirstName(customer.getFirstName());
-    //         customerTmp.setLastName(customer.getLastName());
-    //         customerTmp.setGender(customer.getGender());
-    //         customerTmp.setBirthDate(customer.getBirthDate());
-    //         customerTmp.setEmailAddress(customer.getEmailAddress());
-    //         customerTmp.setComments(customerTmp.getComments());
-    //         customerTmp.setLastModifiedDate(new Date());
-    //         customerTmp.setPhones(customerPhones);
-    //         customerTmp.setAddresses(customerAddresses);
+    // customerTmp.setBranchId(customer.getBranchId());
+    // customerTmp.setFirstName(customer.getFirstName());
+    // customerTmp.setLastName(customer.getLastName());
+    // customerTmp.setGender(customer.getGender());
+    // customerTmp.setBirthDate(customer.getBirthDate());
+    // customerTmp.setEmailAddress(customer.getEmailAddress());
+    // customerTmp.setComments(customerTmp.getComments());
+    // customerTmp.setLastModifiedDate(new Date());
+    // customerTmp.setPhones(customerPhones);
+    // customerTmp.setAddresses(customerAddresses);
 
-    //         switch (customer.getState()) {
-    //             case "ACT":
-    //                 break;
-    //             case "SUS":
-    //             case "BLO":
-    //             case "INA":
-    //                 customerTmp.setState(customer.getState());
-    //                 customerTmp.setClosedDate(new Date());
-    //                 break;
-    //             default:
-    //                 throw new RuntimeException("Estado no válido: " + customer.getState());
-    //         }
+    // switch (customer.getState()) {
+    // case "ACT":
+    // break;
+    // case "SUS":
+    // case "BLO":
+    // case "INA":
+    // customerTmp.setState(customer.getState());
+    // customerTmp.setClosedDate(new Date());
+    // break;
+    // default:
+    // throw new RuntimeException("Estado no válido: " + customer.getState());
+    // }
 
-    //         return customerRepository.save(customerTmp);
-    //     } else {
-    //         throw new RuntimeException("Usuario no encontrado");
-    //     }
+    // return customerRepository.save(customerTmp);
+    // } else {
+    // throw new RuntimeException("Usuario no encontrado");
+    // }
     // }
 }
