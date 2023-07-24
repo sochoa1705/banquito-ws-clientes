@@ -1,4 +1,4 @@
-package ec.edu.espe.banquito.usuarios.model;
+package ec.edu.espe.banquito.usuarios.model.Geography;
 
 import java.io.Serializable;
 
@@ -7,7 +7,6 @@ import jakarta.persistence.Embeddable;
 import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 

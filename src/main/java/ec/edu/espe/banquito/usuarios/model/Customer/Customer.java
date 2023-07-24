@@ -1,10 +1,12 @@
-package ec.edu.espe.banquito.usuarios.model;
+package ec.edu.espe.banquito.usuarios.model.Customer;
 
 import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import ec.edu.espe.banquito.usuarios.model.Bank.Branch;
+import ec.edu.espe.banquito.usuarios.model.Group.GroupCompanyMember;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -95,12 +97,19 @@ public class Customer {
     @JoinColumn(name = "BRANCH_ID", referencedColumnName = "BRANCH_ID", nullable = false, updatable = false, insertable = false)
     private Branch branch;
 
+    // Se elimino updatable false y insertable false para poder insertar manualmente el ID
     @JoinColumn(name = "CUSTOMER_ID", referencedColumnName = "CUSTOMER_ID")
     @OneToMany(cascade = CascadeType.ALL)
     private List<CustomerPhone> phones;
 
+    // Se elimino updatable false y insertable false para poder insertar manualmente el ID
     @JoinColumn(name = "CUSTOMER_ID", referencedColumnName = "CUSTOMER_ID")
     @OneToMany(cascade = CascadeType.ALL)
     private List<CustomerAddress> addresses;
+
+    // Se elimino updatable false y insertable false para poder insertar manualmente el ID
+    @JoinColumn(name = "CUSTOMER_ID", referencedColumnName = "CUSTOMER_ID")
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<GroupCompanyMember> groupMember;
 
 }

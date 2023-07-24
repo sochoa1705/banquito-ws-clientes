@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import ec.edu.espe.banquito.usuarios.model.GroupCompanyMember;
+import ec.edu.espe.banquito.usuarios.model.Group.GroupCompanyMember;
 import ec.edu.espe.banquito.usuarios.repository.GroupCompanyMemberRepository;
 import jakarta.transaction.Transactional;
 

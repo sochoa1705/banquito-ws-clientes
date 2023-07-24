@@ -1,4 +1,4 @@
-package ec.edu.espe.banquito.usuarios.model;
+package ec.edu.espe.banquito.usuarios.model.Geography;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

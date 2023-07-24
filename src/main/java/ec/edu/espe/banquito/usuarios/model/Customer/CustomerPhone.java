@@ -1,4 +1,4 @@
-package ec.edu.espe.banquito.usuarios.model;
+package ec.edu.espe.banquito.usuarios.model.Customer;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

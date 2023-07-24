@@ -1,6 +1,8 @@
 package ec.edu.espe.banquito.usuarios.controller;
 
-import ec.edu.espe.banquito.usuarios.model.Customer;
+import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerRQ;
+import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerUpdateRQ;
+import ec.edu.espe.banquito.usuarios.model.Customer.Customer;
 import ec.edu.espe.banquito.usuarios.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 
@@ -42,13 +44,20 @@ public class CustomerController {
         }
     }
 
-    @GetMapping("/statusandbranch")
-    public ResponseEntity<List<Customer>> getCustomersByStatusAndBranch(
+    @GetMapping("/statusanddocumentandbranch")
+    public ResponseEntity<List<Customer>> getCustomersByStatusAndBranchAndDocument(
+            @RequestParam(required = false) String document,
             @RequestParam(required = false) String status,
             @RequestParam Integer branch) {
 
-        if (status != null) {
+        if (status != null && document != null) {
+            List<Customer> customers = customerService.getCustomersByStatusAndBranchAndDocument(status, branch, document);
+            return ResponseEntity.ok(customers);
+        } else if (status != null && document == null) {
             List<Customer> customers = customerService.getCustomersByStatusAndBranch(status, branch);
+            return ResponseEntity.ok(customers);
+        } else if (status == null && document != null) {
+            List<Customer> customers = customerService.getCustomersByDocumentAndBranch(document, branch);
             return ResponseEntity.ok(customers);
         } else {
             List<Customer> customers = customerService.getCustomersByBranch(branch);
@@ -57,7 +66,7 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody Customer newCustomer) {
+    public ResponseEntity<?> create(@RequestBody CustomerRQ newCustomer) {
         try {
             Customer customerRS = customerService.create(newCustomer);
             return ResponseEntity.ok(customerRS);
@@ -69,7 +78,7 @@ public class CustomerController {
     }
 
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody Customer customer) {
+    public ResponseEntity<?> update(@RequestBody CustomerUpdateRQ customer) {
         try {
             Customer customerRS = customerService.update(customer);
             return ResponseEntity.ok(customerRS);

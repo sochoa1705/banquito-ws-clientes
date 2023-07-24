@@ -1,8 +1,9 @@
-package ec.edu.espe.banquito.usuarios.model;
+package ec.edu.espe.banquito.usuarios.model.Bank;
 
 import java.util.Date;
 import java.util.UUID;
 
+import ec.edu.espe.banquito.usuarios.model.Geography.GeoLocation;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

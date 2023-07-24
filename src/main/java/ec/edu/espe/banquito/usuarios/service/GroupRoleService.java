@@ -3,7 +3,7 @@ package ec.edu.espe.banquito.usuarios.service;
 import java.util.List;
 import java.util.Optional;
 
-import ec.edu.espe.banquito.usuarios.model.GroupRole;
+import ec.edu.espe.banquito.usuarios.model.Group.GroupRole;
 import ec.edu.espe.banquito.usuarios.repository.GroupRoleRepository;
 import jakarta.transaction.Transactional;
 

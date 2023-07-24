@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ec.edu.espe.banquito.usuarios.model.GroupCompanyMember;
+import ec.edu.espe.banquito.usuarios.model.Group.GroupCompanyMember;
 import ec.edu.espe.banquito.usuarios.service.GroupCompanyMemberService;
 
 @RestController
