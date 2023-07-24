@@ -8,7 +8,6 @@ import lombok.Data;
 public class CustomerAddressUpdateRQ {
 
     private Integer id;
-    // private Integer locationId;
     private String locationId;
     private String typeAddress;
     private String line1;

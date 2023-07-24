@@ -10,13 +10,6 @@ public interface GroupCompanyRepository extends JpaRepository<GroupCompany, Inte
 
     GroupCompany findByGroupNameAndEmailAddress(String name, String email);
 
-    // List<GroupCompany> findByBranchIdAndLocationIdAndState(Integer branch, Integer location, String status);
-
-    // List<GroupCompany> findByBranchIdAndLocationId(Integer branch, Integer location);
-
-    // List<GroupCompany> findByBranchIdAndState(Integer branch, String status);
-
-    // List<GroupCompany> findByBranchId(Integer branch);
     List<GroupCompany> findByBranchIdAndLocationIdAndState(String branch, String location, String status);
 
     List<GroupCompany> findByBranchIdAndLocationId(String branch, String location);

@@ -6,5 +6,5 @@ import ec.edu.espe.banquito.usuarios.model.Group.GroupRole;
 
 public interface GroupRoleRepository extends JpaRepository<GroupRole, String> {
 
-    GroupRole findByGroupRoleName (String name);
+    GroupRole findByGroupRoleName(String name);
 }

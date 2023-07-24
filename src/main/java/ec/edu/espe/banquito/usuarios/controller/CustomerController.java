@@ -3,7 +3,6 @@ package ec.edu.espe.banquito.usuarios.controller;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerUpdateRQ;
-import ec.edu.espe.banquito.usuarios.model.Customer.Customer;
 import ec.edu.espe.banquito.usuarios.service.Customer.CustomerService;
 import lombok.RequiredArgsConstructor;
 
@@ -12,6 +11,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/customers")
 @RequiredArgsConstructor
@@ -33,17 +34,6 @@ public class CustomerController {
         List<CustomerRS> customersRS = customerService.getCustomers();
         return ResponseEntity.ok(customersRS);
     }
-
-    // @GetMapping("/{id}")
-    // public ResponseEntity<CustomerRS> getCustomer(@PathVariable Integer id) {
-    //     Optional<Customer> customer = customerService.getCustomer(id);
-
-    //     if (customer.isPresent()) {
-    //         return ResponseEntity.ok(customer.get());
-    //     } else {
-    //         return ResponseEntity.notFound().build();
-    //     }
-    // }
 
     @GetMapping("/{id}")
     public ResponseEntity<CustomerRS> getCustomer(@PathVariable Integer id) {
@@ -61,7 +51,6 @@ public class CustomerController {
             @RequestParam(required = false) String document,
             @RequestParam(required = false) String status,
             @RequestParam String branch) {
-            // @RequestParam Integer branch) {
 
         if (status != null && document != null) {
             List<CustomerRS> customers = customerService.getCustomersByStatusAndBranchAndDocument(status, branch,

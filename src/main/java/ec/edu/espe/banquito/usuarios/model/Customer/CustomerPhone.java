@@ -1,7 +1,5 @@
 package ec.edu.espe.banquito.usuarios.model.Customer;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,7 +20,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "CUSTOMER_PHONE")
-// @JsonIgnoreProperties({ "customer" })
 public class CustomerPhone {
 
     @Id

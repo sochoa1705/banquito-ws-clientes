@@ -27,7 +27,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "CUSTOMER")
-// @JsonIgnoreProperties({ "branch" })
 public class Customer {
 
     @Id
@@ -37,7 +36,6 @@ public class Customer {
 
     @Column(name = "BRANCH_ID", nullable = false, length = 36)
     private String branchId;
-    // private Integer branchId;
 
     @Column(name = "UNIQUE_KEY", nullable = false, length = 36)
     private String uniqueKey;
@@ -89,10 +87,6 @@ public class Customer {
     @Version
     @Column(name = "VERSION", nullable = false)
     private Long version;
-
-    // @ManyToOne
-    // @JoinColumn(name = "BRANCH_ID", referencedColumnName = "BRANCH_ID", nullable = false, updatable = false, insertable = false)
-    // private Branch branch;
 
     // Se elimino updatable false y insertable false para poder insertar manualmente el ID
     @JoinColumn(name = "CUSTOMER_ID", referencedColumnName = "CUSTOMER_ID")

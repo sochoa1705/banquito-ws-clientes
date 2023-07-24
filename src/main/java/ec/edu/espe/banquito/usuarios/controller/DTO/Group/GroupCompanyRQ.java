@@ -9,9 +9,7 @@ import lombok.Data;
 @Builder
 public class GroupCompanyRQ {
 
-    // private Integer branchId;
     private String branchId;
-    // private Integer locationId;
     private String locationId;
     private String groupName;
     private String emailAddress;

@@ -8,14 +8,12 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberUpdateRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyUpdateRQ;
-import ec.edu.espe.banquito.usuarios.model.Customer.Customer;
 import ec.edu.espe.banquito.usuarios.model.Group.GroupCompany;
 import ec.edu.espe.banquito.usuarios.model.Group.GroupCompanyMember;
 import ec.edu.espe.banquito.usuarios.model.Group.GroupCompanyMemberPK;
@@ -42,33 +40,28 @@ public class GroupCompanyService {
     }
 
     public List<GroupCompanyRS> getGroupCompaniesByBranchAndLocationAndState(
-            // Integer branch,
             String branch,
-            // Integer location,
             String location,
             String status) {
-        List<GroupCompany> groupCompanies = groupCompanyRepository.findByBranchIdAndLocationIdAndState(branch, location, status);
+        List<GroupCompany> groupCompanies = groupCompanyRepository.findByBranchIdAndLocationIdAndState(branch, location,
+                status);
         return this.transformToListGroupCompanyRS(groupCompanies);
     }
 
     public List<GroupCompanyRS> getGroupCompaniesByBranchAndLocation(
-            // Integer branch,
             String branch,
             String location) {
-            // Integer location) {
         List<GroupCompany> groupCompanies = groupCompanyRepository.findByBranchIdAndLocationId(branch, location);
         return this.transformToListGroupCompanyRS(groupCompanies);
     }
 
     public List<GroupCompanyRS> getGroupCompaniesByBranchAndState(
-            // Integer branch,
             String branch,
             String status) {
         List<GroupCompany> groupCompanies = groupCompanyRepository.findByBranchIdAndState(branch, status);
         return this.transformToListGroupCompanyRS(groupCompanies);
     }
 
-    // public List<GroupCompanyRS> getGroupCompaniesByBranch(Integer branch) {
     public List<GroupCompanyRS> getGroupCompaniesByBranch(String branch) {
         List<GroupCompany> groupCompanies = groupCompanyRepository.findByBranchId(branch);
         return this.transformToListGroupCompanyRS(groupCompanies);
@@ -237,26 +230,26 @@ public class GroupCompanyService {
         return groupCompany;
     }
 
-    private List<GroupCompanyMember> transformOfGroupCompanyMemberUpdateRQ(
-            List<GroupCompanyMemberUpdateRQ> groupMembersUpdateRQ) {
-        List<GroupCompanyMember> members = new ArrayList<>();
+    // private List<GroupCompanyMember> transformOfGroupCompanyMemberUpdateRQ(
+    // List<GroupCompanyMemberUpdateRQ> groupMembersUpdateRQ) {
+    // List<GroupCompanyMember> members = new ArrayList<>();
 
-        for (GroupCompanyMemberUpdateRQ member : groupMembersUpdateRQ) {
-            GroupCompanyMemberPK groupCompanyPK = new GroupCompanyMemberPK();
-            groupCompanyPK.setGroupCompanyId(member.getGroupCompanyId());
-            groupCompanyPK.setGroupRoleId(member.getGroupRoleId());
-            groupCompanyPK.setCustomerId(member.getCustomerId());
+    // for (GroupCompanyMemberUpdateRQ member : groupMembersUpdateRQ) {
+    // GroupCompanyMemberPK groupCompanyPK = new GroupCompanyMemberPK();
+    // groupCompanyPK.setGroupCompanyId(member.getGroupCompanyId());
+    // groupCompanyPK.setGroupRoleId(member.getGroupRoleId());
+    // groupCompanyPK.setCustomerId(member.getCustomerId());
 
-            GroupCompanyMember groupCompanyMember = GroupCompanyMember.builder()
-                    .PK(groupCompanyPK)
-                    .state(member.getState())
-                    .lastModifiedDate(new Date())
-                    .build();
-            members.add(groupCompanyMember);
-        }
+    // GroupCompanyMember groupCompanyMember = GroupCompanyMember.builder()
+    // .PK(groupCompanyPK)
+    // .state(member.getState())
+    // .lastModifiedDate(new Date())
+    // .build();
+    // members.add(groupCompanyMember);
+    // }
 
-        return members;
-    }
+    // return members;
+    // }
 
     // RESPONSE
     private GroupCompanyRS transformToGroupCompanyRS(GroupCompany groupCompany) {
@@ -300,29 +293,29 @@ public class GroupCompanyService {
 
     private List<GroupCompanyRS> transformToListGroupCompanyRS(List<GroupCompany> groupCompanies) {
 
-        List<GroupCompanyRS> listGroupCompanies =  new ArrayList<>();
+        List<GroupCompanyRS> listGroupCompanies = new ArrayList<>();
 
         for (GroupCompany groupCompany : groupCompanies) {
-             GroupCompanyRS groupCompanyRS = GroupCompanyRS.builder()
-                .id(groupCompany.getId())
-                .branchId(groupCompany.getBranchId())
-                .locationId(groupCompany.getLocationId())
-                .groupName(groupCompany.getGroupName())
-                .emailAddress(groupCompany.getEmailAddress())
-                .phoneNumber(groupCompany.getPhoneNumber())
-                .line1(groupCompany.getLine1())
-                .line2(groupCompany.getLine2())
-                .latitude(groupCompany.getLatitude())
-                .longitude(groupCompany.getLongitude())
-                .creationDate(groupCompany.getCreationDate())
-                .state(groupCompany.getState())
-                .comments(groupCompany.getComments())
-                .groupMembers(this.transformToGroupCompanyMemberRS(groupCompany.getGroupMembers()))
-                .build();
+            GroupCompanyRS groupCompanyRS = GroupCompanyRS.builder()
+                    .id(groupCompany.getId())
+                    .branchId(groupCompany.getBranchId())
+                    .locationId(groupCompany.getLocationId())
+                    .groupName(groupCompany.getGroupName())
+                    .emailAddress(groupCompany.getEmailAddress())
+                    .phoneNumber(groupCompany.getPhoneNumber())
+                    .line1(groupCompany.getLine1())
+                    .line2(groupCompany.getLine2())
+                    .latitude(groupCompany.getLatitude())
+                    .longitude(groupCompany.getLongitude())
+                    .creationDate(groupCompany.getCreationDate())
+                    .state(groupCompany.getState())
+                    .comments(groupCompany.getComments())
+                    .groupMembers(this.transformToGroupCompanyMemberRS(groupCompany.getGroupMembers()))
+                    .build();
 
             listGroupCompanies.add(groupCompanyRS);
         }
-       
+
         return listGroupCompanies;
     }
 }

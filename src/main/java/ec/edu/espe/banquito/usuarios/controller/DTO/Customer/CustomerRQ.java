@@ -11,7 +11,6 @@ import lombok.Data;
 @Builder
 public class CustomerRQ {
 
-    // private Integer branchId;
     private String branchId;
     private String typeDocumentId;
     private String documentId;

@@ -1,7 +1,5 @@
 package ec.edu.espe.banquito.usuarios.model.Customer;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,10 +21,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "CUSTOMER_ADDRESS")
-// @JsonIgnoreProperties({ "customer", "geoLocation" })
 public class CustomerAddress {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CUSTOMER_ADDRESS_ID", nullable = false)
     private Integer id;
 
@@ -35,7 +33,6 @@ public class CustomerAddress {
 
     @Column(name = "LOCATION_ID", nullable = false)
     private String locationId;
-    // private Integer locationId;
 
     @Column(name = "TYPE_ADDRESS", nullable = false, length = 3)
     private String typeAddress;
@@ -65,9 +62,5 @@ public class CustomerAddress {
     @ManyToOne
     @JoinColumn(name = "CUSTOMER_ID", referencedColumnName = "CUSTOMER_ID", nullable = false, insertable = false, updatable = false)
     private Customer customer;
-
-    // @ManyToOne
-    // @JoinColumn(name = "LOCATION_ID", referencedColumnName = "LOCATION_ID", nullable = false, insertable = false, updatable = false)
-    // private GeoLocation geoLocation;
 
 }

@@ -2,6 +2,7 @@ package ec.edu.espe.banquito.usuarios.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyUpdateRQ;
 import ec.edu.espe.banquito.usuarios.service.Group.GroupCompanyService;
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/group-company")
 @RequiredArgsConstructor
@@ -46,9 +48,7 @@ public class GroupCompanyController {
 
     @GetMapping("/branchandlocationandstate")
     public ResponseEntity<List<GroupCompanyRS>> getGroupCompaniesByBranchAndLocationAndState(
-            // @RequestParam Integer branch,
             @RequestParam String branch,
-            // @RequestParam(required = false) Integer location,
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String status) {
 
@@ -60,7 +60,8 @@ public class GroupCompanyController {
             List<GroupCompanyRS> groupCompanies = groupCompanyService.getGroupCompaniesByBranchAndState(branch, status);
             return ResponseEntity.ok(groupCompanies);
         } else if (location != null && status != null) {
-            List<GroupCompanyRS> groupCompanies = groupCompanyService.getGroupCompaniesByBranchAndLocationAndState(branch,
+            List<GroupCompanyRS> groupCompanies = groupCompanyService.getGroupCompaniesByBranchAndLocationAndState(
+                    branch,
                     location, status);
             return ResponseEntity.ok(groupCompanies);
         } else {

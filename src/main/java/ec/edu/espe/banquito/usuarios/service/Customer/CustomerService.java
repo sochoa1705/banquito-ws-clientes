@@ -31,9 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -50,20 +48,13 @@ public class CustomerService {
         return this.transformToListCustomerRS(customers);
     }
 
-    // public Optional<Customer> getCustomer(Integer id) {
-    //     Customer customer = customerRepository.findById(id);
-    //     return this.transformToCustomerRS(customer);
-    // }
-
     public Optional<CustomerRS> getCustomer(Integer id) {
         Optional<Customer> optionalCustomer = customerRepository.findById(id);
         return optionalCustomer.map(this::transformToCustomerRS);
     }
-    
 
     public List<CustomerRS> getCustomersByStatusAndBranchAndDocument(
             String status,
-            // Integer branch,
             String branch,
             String document) {
         List<Customer> customers = customerRepository.findByStateAndBranchIdAndDocumentId(status, branch, document);
@@ -73,7 +64,6 @@ public class CustomerService {
     public List<CustomerRS> getCustomersByStatusAndBranch(
             String status,
             String branch) {
-            // Integer branch) {
         List<Customer> customers = customerRepository.findByStateAndBranchId(status, branch);
         return this.transformToListCustomerRS(customers);
     }
@@ -81,12 +71,10 @@ public class CustomerService {
     public List<CustomerRS> getCustomersByDocumentAndBranch(
             String document,
             String branch) {
-            // Integer branch) {
         List<Customer> customers = customerRepository.findByDocumentIdAndBranchId(document, branch);
         return this.transformToListCustomerRS(customers);
     }
 
-    // public List<CustomerRS> getCustomersByBranch(Integer branch) {
     public List<CustomerRS> getCustomersByBranch(String branch) {
         List<Customer> customers = customerRepository.findByBranchId(branch);
         return this.transformToListCustomerRS(customers);
@@ -416,50 +404,52 @@ public class CustomerService {
         return customerAddresses;
     }
 
-    private List<GroupCompanyMember> transformOfCustomerGroupCompanyUpdateRQ(
-            List<GroupCompanyMemberUpdateRQ> customerGroupCompanyMemberUpdateRQ,
-            Integer customerId) {
+    // private List<GroupCompanyMember> transformOfCustomerGroupCompanyUpdateRQ(
+    // List<GroupCompanyMemberUpdateRQ> customerGroupCompanyMemberUpdateRQ,
+    // Integer customerId) {
 
-        List<GroupCompanyMember> customerGroupCompanies = new ArrayList<>();
+    // List<GroupCompanyMember> customerGroupCompanies = new ArrayList<>();
 
-        for (GroupCompanyMemberUpdateRQ newGroupCompanyData : customerGroupCompanyMemberUpdateRQ) {
-            // System.out.println(newGroupCompanyData.getCustomerId());
-            GroupCompanyMemberPK groupCompanyPK = new GroupCompanyMemberPK();
-            groupCompanyPK.setGroupCompanyId(newGroupCompanyData.getGroupCompanyId());
-            groupCompanyPK.setGroupRoleId(newGroupCompanyData.getGroupRoleId());
-            groupCompanyPK.setCustomerId(customerId);
+    // for (GroupCompanyMemberUpdateRQ newGroupCompanyData :
+    // customerGroupCompanyMemberUpdateRQ) {
+    // // System.out.println(newGroupCompanyData.getCustomerId());
+    // GroupCompanyMemberPK groupCompanyPK = new GroupCompanyMemberPK();
+    // groupCompanyPK.setGroupCompanyId(newGroupCompanyData.getGroupCompanyId());
+    // groupCompanyPK.setGroupRoleId(newGroupCompanyData.getGroupRoleId());
+    // groupCompanyPK.setCustomerId(customerId);
 
-            Optional<GroupCompanyMember> existingGroupCompanyOpt = customerGroupCompanyMemberRepository
-                    .findById(groupCompanyPK);
+    // Optional<GroupCompanyMember> existingGroupCompanyOpt =
+    // customerGroupCompanyMemberRepository
+    // .findById(groupCompanyPK);
 
-            if (existingGroupCompanyOpt.isPresent()) {
-                // System.out.println(newGroupCompanyData.getCustomerId());
-                // System.out.println(existingGroupCompanyOpt);
-                log.info("error2 {}", customerId);
-                log.info("error3 {}", groupCompanyPK);
-                GroupCompanyMember existingGroupCompany = existingGroupCompanyOpt.get();
+    // if (existingGroupCompanyOpt.isPresent()) {
+    // // System.out.println(newGroupCompanyData.getCustomerId());
+    // // System.out.println(existingGroupCompanyOpt);
+    // log.info("error2 {}", customerId);
+    // log.info("error3 {}", groupCompanyPK);
+    // GroupCompanyMember existingGroupCompany = existingGroupCompanyOpt.get();
 
-                existingGroupCompany.setState(newGroupCompanyData.getState());
-                existingGroupCompany.setLastModifiedDate(new Date());
+    // existingGroupCompany.setState(newGroupCompanyData.getState());
+    // existingGroupCompany.setLastModifiedDate(new Date());
 
-                log.info("error2 {}", existingGroupCompany);
+    // log.info("error2 {}", existingGroupCompany);
 
-                customerGroupCompanies.add(existingGroupCompany);
-            } else {
-                log.info("error2 {}", customerId);
-                log.info("error3 {}", groupCompanyPK);
-                GroupCompanyMember newGroupCompany = GroupCompanyMember.builder()
-                        .PK(groupCompanyPK)
-                        .state("ACT")
-                        .creationDate(new Date())
-                        .build();
-                log.info("error4 {}", groupCompanyPK);
-                customerGroupCompanies.add(newGroupCompany);
-            }
-        }
-        // System.out.println(customerGroupCompanies);
-        return customerGroupCompanies;
-    }
+    // customerGroupCompanies.add(existingGroupCompany);
+    // } else {
+    // log.info("error2 {}", customerId);
+    // log.info("error3 {}", groupCompanyPK);
+    // GroupCompanyMember newGroupCompany = GroupCompanyMember.builder()
+    // .PK(groupCompanyPK)
+    // .state("ACT")
+    // .creationDate(new Date())
+    // .build();
+    // log.info("error4 {}", groupCompanyPK);
+    // customerGroupCompanies.add(newGroupCompany);
+    // }
+    // }
+    // // System.out.println(customerGroupCompanies);
+    // return customerGroupCompanies;
+    // }
 
     // RESPONSE
     private CustomerRS transformToCustomerRS(Customer customer) {
@@ -537,33 +527,33 @@ public class CustomerService {
 
         return customerGroupsRS;
     }
-    
+
     private List<CustomerRS> transformToListCustomerRS(List<Customer> customers) {
 
-        List<CustomerRS> listCustomers =  new ArrayList<>();
+        List<CustomerRS> listCustomers = new ArrayList<>();
 
-        for (Customer customer : customers ) {
-             CustomerRS customerRS = CustomerRS.builder()
-                .id(customer.getId())
-                .branchId(customer.getBranchId())
-                .typeDocumentId(customer.getTypeDocumentId())
-                .documentId(customer.getDocumentId())
-                .firstName(customer.getFirstName())
-                .lastName(customer.getLastName())
-                .gender(customer.getGender())
-                .birthDate(customer.getBirthDate())
-                .emailAddress(customer.getEmailAddress())
-                .state(customer.getState())
-                .creationDate(customer.getActivationDate())
-                .comments(customer.getComments())
-                .phones(this.transformToCustomerPhoneRS(customer.getPhones()))
-                .addresses(this.transformToCustomerAddressRS(customer.getAddresses()))
-                .groupMember(this.transformToCustomerGroupRS(customer.getGroupMember()))
-                .build();
+        for (Customer customer : customers) {
+            CustomerRS customerRS = CustomerRS.builder()
+                    .id(customer.getId())
+                    .branchId(customer.getBranchId())
+                    .typeDocumentId(customer.getTypeDocumentId())
+                    .documentId(customer.getDocumentId())
+                    .firstName(customer.getFirstName())
+                    .lastName(customer.getLastName())
+                    .gender(customer.getGender())
+                    .birthDate(customer.getBirthDate())
+                    .emailAddress(customer.getEmailAddress())
+                    .state(customer.getState())
+                    .creationDate(customer.getActivationDate())
+                    .comments(customer.getComments())
+                    .phones(this.transformToCustomerPhoneRS(customer.getPhones()))
+                    .addresses(this.transformToCustomerAddressRS(customer.getAddresses()))
+                    .groupMember(this.transformToCustomerGroupRS(customer.getGroupMember()))
+                    .build();
 
             listCustomers.add(customerRS);
         }
-       
+
         return listCustomers;
     }
 }

@@ -1,7 +1,5 @@
 package ec.edu.espe.banquito.usuarios.model.Group;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import ec.edu.espe.banquito.usuarios.model.Customer.Customer;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -26,7 +24,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "GROUP_COMPANY_MEMBER")
-// @JsonIgnoreProperties({ "customer", "groupRole", "groupCompany" })
 public class GroupCompanyMember {
 
     @EmbeddedId
