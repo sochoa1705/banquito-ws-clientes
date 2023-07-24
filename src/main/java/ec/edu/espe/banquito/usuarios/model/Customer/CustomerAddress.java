@@ -2,7 +2,6 @@ package ec.edu.espe.banquito.usuarios.model.Customer;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import ec.edu.espe.banquito.usuarios.model.Geography.GeoLocation;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,7 +34,8 @@ public class CustomerAddress {
     private Integer customerId;
 
     @Column(name = "LOCATION_ID", nullable = false)
-    private Integer locationId;
+    private String locationId;
+    // private Integer locationId;
 
     @Column(name = "TYPE_ADDRESS", nullable = false, length = 3)
     private String typeAddress;
@@ -66,8 +66,8 @@ public class CustomerAddress {
     @JoinColumn(name = "CUSTOMER_ID", referencedColumnName = "CUSTOMER_ID", nullable = false, insertable = false, updatable = false)
     private Customer customer;
 
-    @ManyToOne
-    @JoinColumn(name = "LOCATION_ID", referencedColumnName = "LOCATION_ID", nullable = false, insertable = false, updatable = false)
-    private GeoLocation geoLocation;
+    // @ManyToOne
+    // @JoinColumn(name = "LOCATION_ID", referencedColumnName = "LOCATION_ID", nullable = false, insertable = false, updatable = false)
+    // private GeoLocation geoLocation;
 
 }

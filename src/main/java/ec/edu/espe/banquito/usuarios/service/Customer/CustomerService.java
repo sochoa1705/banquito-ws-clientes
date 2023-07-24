@@ -63,7 +63,8 @@ public class CustomerService {
 
     public List<CustomerRS> getCustomersByStatusAndBranchAndDocument(
             String status,
-            Integer branch,
+            // Integer branch,
+            String branch,
             String document) {
         List<Customer> customers = customerRepository.findByStateAndBranchIdAndDocumentId(status, branch, document);
         return this.transformToListCustomerRS(customers);
@@ -71,19 +72,22 @@ public class CustomerService {
 
     public List<CustomerRS> getCustomersByStatusAndBranch(
             String status,
-            Integer branch) {
+            String branch) {
+            // Integer branch) {
         List<Customer> customers = customerRepository.findByStateAndBranchId(status, branch);
         return this.transformToListCustomerRS(customers);
     }
 
     public List<CustomerRS> getCustomersByDocumentAndBranch(
             String document,
-            Integer branch) {
+            String branch) {
+            // Integer branch) {
         List<Customer> customers = customerRepository.findByDocumentIdAndBranchId(document, branch);
         return this.transformToListCustomerRS(customers);
     }
 
-    public List<CustomerRS> getCustomersByBranch(Integer branch) {
+    // public List<CustomerRS> getCustomersByBranch(Integer branch) {
+    public List<CustomerRS> getCustomersByBranch(String branch) {
         List<Customer> customers = customerRepository.findByBranchId(branch);
         return this.transformToListCustomerRS(customers);
     }

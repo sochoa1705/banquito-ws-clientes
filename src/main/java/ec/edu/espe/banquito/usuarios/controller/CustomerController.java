@@ -60,7 +60,8 @@ public class CustomerController {
     public ResponseEntity<List<CustomerRS>> getCustomersByStatusAndBranchAndDocument(
             @RequestParam(required = false) String document,
             @RequestParam(required = false) String status,
-            @RequestParam Integer branch) {
+            @RequestParam String branch) {
+            // @RequestParam Integer branch) {
 
         if (status != null && document != null) {
             List<CustomerRS> customers = customerService.getCustomersByStatusAndBranchAndDocument(status, branch,

@@ -46,8 +46,10 @@ public class GroupCompanyController {
 
     @GetMapping("/branchandlocationandstate")
     public ResponseEntity<List<GroupCompanyRS>> getGroupCompaniesByBranchAndLocationAndState(
-            @RequestParam Integer branch,
-            @RequestParam(required = false) Integer location,
+            // @RequestParam Integer branch,
+            @RequestParam String branch,
+            // @RequestParam(required = false) Integer location,
+            @RequestParam(required = false) String location,
             @RequestParam(required = false) String status) {
 
         if (location != null && status == null) {

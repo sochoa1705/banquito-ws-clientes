@@ -42,28 +42,34 @@ public class GroupCompanyService {
     }
 
     public List<GroupCompanyRS> getGroupCompaniesByBranchAndLocationAndState(
-            Integer branch,
-            Integer location,
+            // Integer branch,
+            String branch,
+            // Integer location,
+            String location,
             String status) {
         List<GroupCompany> groupCompanies = groupCompanyRepository.findByBranchIdAndLocationIdAndState(branch, location, status);
         return this.transformToListGroupCompanyRS(groupCompanies);
     }
 
     public List<GroupCompanyRS> getGroupCompaniesByBranchAndLocation(
-            Integer branch,
-            Integer location) {
+            // Integer branch,
+            String branch,
+            String location) {
+            // Integer location) {
         List<GroupCompany> groupCompanies = groupCompanyRepository.findByBranchIdAndLocationId(branch, location);
         return this.transformToListGroupCompanyRS(groupCompanies);
     }
 
     public List<GroupCompanyRS> getGroupCompaniesByBranchAndState(
-            Integer branch,
+            // Integer branch,
+            String branch,
             String status) {
         List<GroupCompany> groupCompanies = groupCompanyRepository.findByBranchIdAndState(branch, status);
         return this.transformToListGroupCompanyRS(groupCompanies);
     }
 
-    public List<GroupCompanyRS> getGroupCompaniesByBranch(Integer branch) {
+    // public List<GroupCompanyRS> getGroupCompaniesByBranch(Integer branch) {
+    public List<GroupCompanyRS> getGroupCompaniesByBranch(String branch) {
         List<GroupCompany> groupCompanies = groupCompanyRepository.findByBranchId(branch);
         return this.transformToListGroupCompanyRS(groupCompanies);
     }
@@ -255,6 +261,7 @@ public class GroupCompanyService {
     // RESPONSE
     private GroupCompanyRS transformToGroupCompanyRS(GroupCompany groupCompany) {
         GroupCompanyRS groupCompanyRS = GroupCompanyRS.builder()
+                .id(groupCompany.getId())
                 .branchId(groupCompany.getBranchId())
                 .locationId(groupCompany.getLocationId())
                 .groupName(groupCompany.getGroupName())

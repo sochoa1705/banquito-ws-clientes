@@ -12,7 +12,8 @@ import lombok.Data;
 public class CustomerRS {
 
     private Integer id;
-    private Integer branchId;
+    // private Integer branchId;
+    private String branchId;
     private String typeDocumentId;
     private String documentId;
     private String firstName;

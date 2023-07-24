@@ -8,7 +8,8 @@ import lombok.Data;
 public class CustomerAddressRS {
 
     private Integer id;
-    private Integer locationId;
+    // private Integer locationId;
+    private String locationId;
     private String typeAddress;
     private String line1;
     private String line2;

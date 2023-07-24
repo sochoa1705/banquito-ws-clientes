@@ -12,13 +12,17 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
     Customer findByEmailAddress(String email);
 
-    List<Customer> findByStateAndBranchIdAndDocumentId(String state, Integer branchId, String document);
+    // List<Customer> findByStateAndBranchIdAndDocumentId(String state, Integer branchId, String document);
+    List<Customer> findByStateAndBranchIdAndDocumentId(String state, String branchId, String document);
 
-    List<Customer> findByStateAndBranchId(String state, Integer branchId);
+    // List<Customer> findByStateAndBranchId(String state, Integer branchId);
+    List<Customer> findByStateAndBranchId(String state, String branchId);
 
-    List<Customer> findByDocumentIdAndBranchId(String document, Integer branchId);
+    // List<Customer> findByDocumentIdAndBranchId(String document, Integer branchId);
+    List<Customer> findByDocumentIdAndBranchId(String document, String branchId);
 
-    List<Customer> findByBranchId(Integer branchId);
+    // List<Customer> findByBranchId(Integer branchId);
+    List<Customer> findByBranchId(String branchId);
 
     List<Customer> findByTypeDocumentIdAndDocumentId(String typeDocument, String document);
 }

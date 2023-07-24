@@ -7,7 +7,8 @@ import lombok.Data;
 @Builder
 public class CustomerAddressRQ {
 
-    private Integer locationId;
+    // private Integer locationId;
+    private String locationId;
     private String typeAddress;
     private String line1;
     private String line2;

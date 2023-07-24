@@ -1,9 +1,5 @@
 package ec.edu.espe.banquito.usuarios.model.Group;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import ec.edu.espe.banquito.usuarios.model.Bank.Branch;
-import ec.edu.espe.banquito.usuarios.model.Geography.GeoLocation;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -40,11 +35,13 @@ public class GroupCompany {
     @Column(name = "GROUP_COMPANY_ID", nullable = false)
     private Integer id;
 
-    @Column(name = "BRANCH_ID", nullable = false)
-    private Integer branchId;
+    @Column(name = "BRANCH_ID", nullable = false, length = 36)
+    private String branchId;
+    // private Integer branchId;
 
-    @Column(name = "LOCATION_ID", nullable = false)
-    private Integer locationId;
+    @Column(name = "LOCATION_ID", nullable = false, length = 36)
+    private String locationId;
+    // private Integer locationId;
 
     @Column(name = "UNIQUE_KEY", length = 36)
     private String uniqueKey;
@@ -96,13 +93,13 @@ public class GroupCompany {
     @Column(name = "VERSION", nullable = false)
     private Long version;
 
-    @ManyToOne
-    @JoinColumn(name = "BRANCH_ID", referencedColumnName = "BRANCH_ID", nullable = false, insertable = false, updatable = false)
-    private Branch branch;
+    // @ManyToOne
+    // @JoinColumn(name = "BRANCH_ID", referencedColumnName = "BRANCH_ID", nullable = false, insertable = false, updatable = false)
+    // private Branch branch;
 
-    @ManyToOne
-    @JoinColumn(name = "LOCATION_ID", referencedColumnName = "LOCATION_ID", nullable = false, insertable = false, updatable = false)
-    private GeoLocation geoLocation;
+    // @ManyToOne
+    // @JoinColumn(name = "LOCATION_ID", referencedColumnName = "LOCATION_ID", nullable = false, insertable = false, updatable = false)
+    // private GeoLocation geoLocation;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "GROUP_COMPANY_ID", referencedColumnName = "GROUP_COMPANY_ID")

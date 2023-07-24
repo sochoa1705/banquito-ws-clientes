@@ -12,7 +12,8 @@ import lombok.Data;
 public class CustomerUpdateRQ {
 
     private Integer id;
-    private Integer branchId;
+    // private Integer branchId;
+    private String branchId;
     private String firstName;
     private String lastName;
     private String gender;
