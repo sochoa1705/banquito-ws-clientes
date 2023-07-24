@@ -31,7 +31,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "CUSTOMER")
-@JsonIgnoreProperties({ "branch" })
+// @JsonIgnoreProperties({ "branch" })
 public class Customer {
 
     @Id

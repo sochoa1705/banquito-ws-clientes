@@ -1,9 +1,10 @@
 package ec.edu.espe.banquito.usuarios.controller;
 
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerRQ;
+import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerUpdateRQ;
 import ec.edu.espe.banquito.usuarios.model.Customer.Customer;
-import ec.edu.espe.banquito.usuarios.service.CustomerService;
+import ec.edu.espe.banquito.usuarios.service.Customer.CustomerService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -28,48 +29,68 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<Customer>> getCustomers() {
-        List<Customer> customers = customerService.getCustomers();
-        return ResponseEntity.ok(customers);
+    public ResponseEntity<List<CustomerRS>> getCustomers() {
+        List<CustomerRS> customersRS = customerService.getCustomers();
+        return ResponseEntity.ok(customersRS);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomer(@PathVariable Integer id) {
-        Optional<Customer> customer = customerService.getCustomer(id);
+    // @GetMapping("/{id}")
+    // public ResponseEntity<CustomerRS> getCustomer(@PathVariable Integer id) {
+    //     Optional<Customer> customer = customerService.getCustomer(id);
 
-        if (customer.isPresent()) {
-            return ResponseEntity.ok(customer.get());
+    //     if (customer.isPresent()) {
+    //         return ResponseEntity.ok(customer.get());
+    //     } else {
+    //         return ResponseEntity.notFound().build();
+    //     }
+    // }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CustomerRS> getCustomer(@PathVariable Integer id) {
+        Optional<CustomerRS> customerRS = customerService.getCustomer(id);
+
+        if (customerRS.isPresent()) {
+            return ResponseEntity.ok(customerRS.get());
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/statusanddocumentandbranch")
-    public ResponseEntity<List<Customer>> getCustomersByStatusAndBranchAndDocument(
+    public ResponseEntity<List<CustomerRS>> getCustomersByStatusAndBranchAndDocument(
             @RequestParam(required = false) String document,
             @RequestParam(required = false) String status,
             @RequestParam Integer branch) {
 
         if (status != null && document != null) {
-            List<Customer> customers = customerService.getCustomersByStatusAndBranchAndDocument(status, branch, document);
+            List<CustomerRS> customers = customerService.getCustomersByStatusAndBranchAndDocument(status, branch,
+                    document);
             return ResponseEntity.ok(customers);
         } else if (status != null && document == null) {
-            List<Customer> customers = customerService.getCustomersByStatusAndBranch(status, branch);
+            List<CustomerRS> customers = customerService.getCustomersByStatusAndBranch(status, branch);
             return ResponseEntity.ok(customers);
         } else if (status == null && document != null) {
-            List<Customer> customers = customerService.getCustomersByDocumentAndBranch(document, branch);
+            List<CustomerRS> customers = customerService.getCustomersByDocumentAndBranch(document, branch);
             return ResponseEntity.ok(customers);
         } else {
-            List<Customer> customers = customerService.getCustomersByBranch(branch);
+            List<CustomerRS> customers = customerService.getCustomersByBranch(branch);
             return ResponseEntity.ok(customers);
         }
+    }
+
+    @GetMapping("/typeanddocument")
+    public ResponseEntity<List<CustomerRS>> getCustomerByTypeDocumentAndDocument(
+            @RequestParam String typeDocument,
+            @RequestParam String document) {
+
+        List<CustomerRS> customersRS = customerService.getCustomerByTypeDocumentAndDocument(typeDocument, document);
+        return ResponseEntity.ok(customersRS);
     }
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody CustomerRQ newCustomer) {
         try {
-            Customer customerRS = customerService.create(newCustomer);
-            return ResponseEntity.ok(customerRS);
+            return ResponseEntity.ok(customerService.create(newCustomer));
         } catch (RuntimeException rte) {
             return ResponseEntity.badRequest().body(rte.getMessage());
         } catch (Exception e) {
@@ -80,8 +101,8 @@ public class CustomerController {
     @PutMapping
     public ResponseEntity<?> update(@RequestBody CustomerUpdateRQ customer) {
         try {
-            Customer customerRS = customerService.update(customer);
-            return ResponseEntity.ok(customerRS);
+
+            return ResponseEntity.ok(customerService.update(customer));
         } catch (RuntimeException rte) {
             return ResponseEntity.badRequest().body(rte.getMessage());
         } catch (Exception e) {

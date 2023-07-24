@@ -1,12 +1,16 @@
-package ec.edu.espe.banquito.usuarios.service;
+package ec.edu.espe.banquito.usuarios.service.Customer;
 
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerAddressRQ;
+import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerAddressRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerAddressUpdateRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerPhoneRQ;
+import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerPhoneRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerPhoneUpdateRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerRQ;
+import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerUpdateRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberRQ;
+import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberUpdateRQ;
 import ec.edu.espe.banquito.usuarios.model.Customer.Customer;
 import ec.edu.espe.banquito.usuarios.model.Customer.CustomerAddress;
@@ -27,7 +31,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -39,39 +45,56 @@ public class CustomerService {
     private final CustomerAddressRepository customerAddressRepository;
     private final GroupCompanyMemberRepository customerGroupCompanyMemberRepository;
 
-    public List<Customer> getCustomers() {
-        return customerRepository.findAll();
+    public List<CustomerRS> getCustomers() {
+        List<Customer> customers = customerRepository.findAll();
+        return this.transformToListCustomerRS(customers);
     }
 
-    public Optional<Customer> getCustomer(Integer id) {
-        return customerRepository.findById(id);
-    }
+    // public Optional<Customer> getCustomer(Integer id) {
+    //     Customer customer = customerRepository.findById(id);
+    //     return this.transformToCustomerRS(customer);
+    // }
 
-    public List<Customer> getCustomersByStatusAndBranchAndDocument(
+    public Optional<CustomerRS> getCustomer(Integer id) {
+        Optional<Customer> optionalCustomer = customerRepository.findById(id);
+        return optionalCustomer.map(this::transformToCustomerRS);
+    }
+    
+
+    public List<CustomerRS> getCustomersByStatusAndBranchAndDocument(
             String status,
             Integer branch,
             String document) {
-        return customerRepository.findByStateAndBranchIdAndDocumentId(status, branch, document);
+        List<Customer> customers = customerRepository.findByStateAndBranchIdAndDocumentId(status, branch, document);
+        return this.transformToListCustomerRS(customers);
     }
 
-    public List<Customer> getCustomersByStatusAndBranch(
+    public List<CustomerRS> getCustomersByStatusAndBranch(
             String status,
             Integer branch) {
-        return customerRepository.findByStateAndBranchId(status, branch);
+        List<Customer> customers = customerRepository.findByStateAndBranchId(status, branch);
+        return this.transformToListCustomerRS(customers);
     }
 
-    public List<Customer> getCustomersByDocumentAndBranch(
+    public List<CustomerRS> getCustomersByDocumentAndBranch(
             String document,
             Integer branch) {
-        return customerRepository.findByDocumentIdAndBranchId(document, branch);
+        List<Customer> customers = customerRepository.findByDocumentIdAndBranchId(document, branch);
+        return this.transformToListCustomerRS(customers);
     }
 
-    public List<Customer> getCustomersByBranch(Integer branch) {
-        return customerRepository.findByBranchId(branch);
+    public List<CustomerRS> getCustomersByBranch(Integer branch) {
+        List<Customer> customers = customerRepository.findByBranchId(branch);
+        return this.transformToListCustomerRS(customers);
+    }
+
+    public List<CustomerRS> getCustomerByTypeDocumentAndDocument(String typeDocument, String document) {
+        List<Customer> customers = customerRepository.findByTypeDocumentIdAndDocumentId(typeDocument, document);
+        return this.transformToListCustomerRS(customers);
     }
 
     @Transactional
-    public Customer create(CustomerRQ customerRQ) {
+    public CustomerRS create(CustomerRQ customerRQ) {
         // Transform CustomerRQ to Customer
         Customer newCustomer = this.transformCustomerRQ(customerRQ);
 
@@ -100,12 +123,13 @@ public class CustomerService {
                         this.transformGroupCompanyMemberRQ(customerRQ.getGroupMember(), customer.getId()));
             }
 
-            return customer;
+            // Transform the updated Customer to CustomerRS before returning
+            return this.transformToCustomerRS(customer);
         }
     }
 
     @Transactional
-    public Customer update(CustomerUpdateRQ customerUpdateRQ) {
+    public CustomerRS update(CustomerUpdateRQ customerUpdateRQ) {
         Optional<Customer> customerOpt = customerRepository.findById(customerUpdateRQ.getId());
 
         if (customerOpt.isPresent()) {
@@ -120,7 +144,7 @@ public class CustomerService {
             }
 
             // Transform CustomerUpdateRQ to Customer
-            Customer customer = this.transformCustomerUpdateRQ(customerUpdateRQ);
+            Customer customer = this.transformOfCustomerUpdateRQ(customerUpdateRQ);
 
             customerTmp.setBranchId(customer.getBranchId());
             customerTmp.setFirstName(customer.getFirstName());
@@ -130,6 +154,45 @@ public class CustomerService {
             customerTmp.setEmailAddress(customer.getEmailAddress());
             customerTmp.setComments(customer.getComments());
             customerTmp.setLastModifiedDate(customer.getLastModifiedDate());
+
+            // Delete phones that are not present in the update request
+            List<CustomerPhone> phonesToRemove = new ArrayList<>();
+            for (CustomerPhone existingPhone : customerTmp.getPhones()) {
+                boolean found = false;
+                for (CustomerPhone updatedPhone : customer.getPhones()) {
+                    if (existingPhone.getId() != null && existingPhone.getId().equals(updatedPhone.getId())) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    phonesToRemove.add(existingPhone);
+                }
+            }
+
+            for (CustomerPhone phoneToRemove : phonesToRemove) {
+                customerPhoneRepository.delete(phoneToRemove);
+            }
+
+            // Delete addresses that are not present in the update request
+            List<CustomerAddress> addressesToRemove = new ArrayList<>();
+            for (CustomerAddress existingAddress : customerTmp.getAddresses()) {
+                boolean found = false;
+                for (CustomerAddress updatedAddress : customer.getAddresses()) {
+                    if (existingAddress.getId() != null && existingAddress.getId().equals(updatedAddress.getId())) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    addressesToRemove.add(existingAddress);
+                }
+            }
+
+            for (CustomerAddress addressToRemove : addressesToRemove) {
+                customerAddressRepository.delete(addressToRemove);
+            }
+
             customerTmp.setPhones(customer.getPhones());
             customerTmp.setAddresses(customer.getAddresses());
             // customerTmp.setGroupMember(customer.getGroupMember());
@@ -147,12 +210,16 @@ public class CustomerService {
                     throw new RuntimeException("Estado no válido: " + customer.getState());
             }
 
-            return customerRepository.save(customerTmp);
+            customerRepository.save(customerTmp);
+
+            // Transform the updated Customer to CustomerRS before returning
+            return this.transformToCustomerRS(customerTmp);
         } else {
             throw new RuntimeException("Usuario no encontrado");
         }
     }
 
+    // CREATE REQUEST
     private Customer transformCustomerRQ(CustomerRQ customerRQ) {
         Customer customer = Customer.builder()
                 .branchId(customerRQ.getBranchId())
@@ -234,7 +301,8 @@ public class CustomerService {
         return customerCompanies;
     }
 
-    private Customer transformCustomerUpdateRQ(CustomerUpdateRQ customerUpdateRQ) {
+    // UPDATE REQUEST
+    private Customer transformOfCustomerUpdateRQ(CustomerUpdateRQ customerUpdateRQ) {
         Customer customer = Customer.builder()
                 .id(customerUpdateRQ.getId())
                 .branchId(customerUpdateRQ.getBranchId())
@@ -246,16 +314,15 @@ public class CustomerService {
                 .lastModifiedDate(new Date())
                 .state(customerUpdateRQ.getState())
                 .comments(customerUpdateRQ.getComments())
-                .phones(this.transformCustomerPhoneUpdateRQ(customerUpdateRQ.getPhones(), customerUpdateRQ.getId()))
-                .addresses(this.transformCustomerAddressUpdateRQ(customerUpdateRQ.getAddresses(),
+                .phones(this.transformOfCustomerPhoneUpdateRQ(customerUpdateRQ.getPhones(), customerUpdateRQ.getId()))
+                .addresses(this.transformOfCustomerAddressUpdateRQ(customerUpdateRQ.getAddresses(),
                         customerUpdateRQ.getId()))
-                // .groupMember(this.transformCustomerGroupCompanyUpdateRQ(customerUpdateRQ.getGroupMember(), customerUpdateRQ.getId()))
                 .build();
 
         return customer;
     }
 
-    private List<CustomerPhone> transformCustomerPhoneUpdateRQ(List<CustomerPhoneUpdateRQ> customerPhoneUpdateRQ,
+    private List<CustomerPhone> transformOfCustomerPhoneUpdateRQ(List<CustomerPhoneUpdateRQ> customerPhoneUpdateRQ,
             Integer customerId) {
 
         List<CustomerPhone> customerPhones = new ArrayList<>();
@@ -301,7 +368,7 @@ public class CustomerService {
         return customerPhones;
     }
 
-    private List<CustomerAddress> transformCustomerAddressUpdateRQ(
+    private List<CustomerAddress> transformOfCustomerAddressUpdateRQ(
             List<CustomerAddressUpdateRQ> customerAddressUpdateRQ,
             Integer customerId) {
 
@@ -345,7 +412,7 @@ public class CustomerService {
         return customerAddresses;
     }
 
-    private List<GroupCompanyMember> transformCustomerGroupCompanyUpdateRQ(
+    private List<GroupCompanyMember> transformOfCustomerGroupCompanyUpdateRQ(
             List<GroupCompanyMemberUpdateRQ> customerGroupCompanyMemberUpdateRQ,
             Integer customerId) {
 
@@ -359,7 +426,7 @@ public class CustomerService {
             groupCompanyPK.setCustomerId(customerId);
 
             Optional<GroupCompanyMember> existingGroupCompanyOpt = customerGroupCompanyMemberRepository
-                        .findById(groupCompanyPK);
+                    .findById(groupCompanyPK);
 
             if (existingGroupCompanyOpt.isPresent()) {
                 // System.out.println(newGroupCompanyData.getCustomerId());
@@ -388,5 +455,111 @@ public class CustomerService {
         }
         // System.out.println(customerGroupCompanies);
         return customerGroupCompanies;
+    }
+
+    // RESPONSE
+    private CustomerRS transformToCustomerRS(Customer customer) {
+        CustomerRS customerRS = CustomerRS.builder()
+                .id(customer.getId())
+                .branchId(customer.getBranchId())
+                .typeDocumentId(customer.getTypeDocumentId())
+                .documentId(customer.getDocumentId())
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .gender(customer.getGender())
+                .birthDate(customer.getBirthDate())
+                .emailAddress(customer.getEmailAddress())
+                .state(customer.getState())
+                .creationDate(customer.getActivationDate())
+                .comments(customer.getComments())
+                .phones(this.transformToCustomerPhoneRS(customer.getPhones()))
+                .addresses(this.transformToCustomerAddressRS(customer.getAddresses()))
+                .groupMember(this.transformToCustomerGroupRS(customer.getGroupMember()))
+                .build();
+
+        return customerRS;
+    }
+
+    private List<CustomerPhoneRS> transformToCustomerPhoneRS(List<CustomerPhone> customerPhones) {
+        List<CustomerPhoneRS> customerPhonesRS = new ArrayList<>();
+
+        for (CustomerPhone phone : customerPhones) {
+            CustomerPhoneRS phoneRS = CustomerPhoneRS.builder()
+                    .id(phone.getId())
+                    .phoneType(phone.getPhoneType())
+                    .phoneNumber(phone.getPhoneNumber())
+                    .isDefault(phone.getIsDefault())
+                    .build();
+            customerPhonesRS.add(phoneRS);
+        }
+
+        return customerPhonesRS;
+    }
+
+    private List<CustomerAddressRS> transformToCustomerAddressRS(List<CustomerAddress> customerAddresses) {
+        List<CustomerAddressRS> customerAddressesRS = new ArrayList<>();
+
+        for (CustomerAddress address : customerAddresses) {
+            CustomerAddressRS addressRS = CustomerAddressRS.builder()
+                    .id(address.getId())
+                    .locationId(address.getLocationId())
+                    .typeAddress(address.getTypeAddress())
+                    .line1(address.getLine1())
+                    .line2(address.getLine2())
+                    .latitude(address.getLatitude())
+                    .longitude(address.getLongitude())
+                    .isDefault(address.getIsDefault())
+                    .state(address.getState())
+                    .build();
+            customerAddressesRS.add(addressRS);
+        }
+
+        return customerAddressesRS;
+    }
+
+    private List<GroupCompanyMemberRS> transformToCustomerGroupRS(List<GroupCompanyMember> customerGroups) {
+        List<GroupCompanyMemberRS> customerGroupsRS = new ArrayList<>();
+
+        for (GroupCompanyMember group : customerGroups) {
+            GroupCompanyMemberRS groupRS = GroupCompanyMemberRS.builder()
+                    .groupCompanyId(group.getPK().getGroupCompanyId())
+                    .groupRoleId(group.getPK().getGroupRoleId())
+                    .customerId(group.getPK().getCustomerId())
+                    .state(group.getState())
+                    .creationDate(group.getCreationDate())
+                    .build();
+            customerGroupsRS.add(groupRS);
+        }
+
+        return customerGroupsRS;
+    }
+    
+    private List<CustomerRS> transformToListCustomerRS(List<Customer> customers) {
+
+        List<CustomerRS> listCustomers =  new ArrayList<>();
+
+        for (Customer customer : customers ) {
+             CustomerRS customerRS = CustomerRS.builder()
+                .id(customer.getId())
+                .branchId(customer.getBranchId())
+                .typeDocumentId(customer.getTypeDocumentId())
+                .documentId(customer.getDocumentId())
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .gender(customer.getGender())
+                .birthDate(customer.getBirthDate())
+                .emailAddress(customer.getEmailAddress())
+                .state(customer.getState())
+                .creationDate(customer.getActivationDate())
+                .comments(customer.getComments())
+                .phones(this.transformToCustomerPhoneRS(customer.getPhones()))
+                .addresses(this.transformToCustomerAddressRS(customer.getAddresses()))
+                .groupMember(this.transformToCustomerGroupRS(customer.getGroupMember()))
+                .build();
+
+            listCustomers.add(customerRS);
+        }
+       
+        return listCustomers;
     }
 }

@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "GROUP_COMPANY")
-@JsonIgnoreProperties({ "branch" })
+// @JsonIgnoreProperties({ "branch" })
 public class GroupCompany {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -106,5 +106,5 @@ public class GroupCompany {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "GROUP_COMPANY_ID", referencedColumnName = "GROUP_COMPANY_ID")
-    private List<GroupCompanyMember> groupCompanyMembers;
+    private List<GroupCompanyMember> groupMembers;
 }

@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "CUSTOMER_ADDRESS")
-@JsonIgnoreProperties({ "customer", "geoLocation" })
+// @JsonIgnoreProperties({ "customer", "geoLocation" })
 public class CustomerAddress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

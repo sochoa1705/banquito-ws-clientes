@@ -19,4 +19,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     List<Customer> findByDocumentIdAndBranchId(String document, Integer branchId);
 
     List<Customer> findByBranchId(Integer branchId);
+
+    List<Customer> findByTypeDocumentIdAndDocumentId(String typeDocument, String document);
 }

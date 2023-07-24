@@ -1,4 +1,4 @@
-package ec.edu.espe.banquito.usuarios.service;
+package ec.edu.espe.banquito.usuarios.service.Group;
 
 import java.util.List;
 import java.util.Optional;

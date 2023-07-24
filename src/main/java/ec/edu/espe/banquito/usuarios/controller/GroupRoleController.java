@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ec.edu.espe.banquito.usuarios.model.Group.GroupRole;
-import ec.edu.espe.banquito.usuarios.service.GroupRoleService;
+import ec.edu.espe.banquito.usuarios.service.Group.GroupRoleService;
 
 @RestController
 @RequestMapping("/api/v1/group-role")

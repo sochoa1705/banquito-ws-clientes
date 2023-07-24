@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "CUSTOMER_PHONE")
-@JsonIgnoreProperties({ "customer" })
+// @JsonIgnoreProperties({ "customer" })
 public class CustomerPhone {
 
     @Id
