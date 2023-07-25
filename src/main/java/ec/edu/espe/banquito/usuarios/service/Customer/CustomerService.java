@@ -110,7 +110,7 @@ public class CustomerService {
 
             Customer customer = customerRepository.save(newCustomer);
 
-            if (!customerRQ.getGroupMember().isEmpty()) {
+            if (customerRQ.getGroupMember() != null && !customerRQ.getGroupMember().isEmpty()) {
                 customer.setGroupMember(
                         this.transformGroupCompanyMemberRQ(customerRQ.getGroupMember(), customer.getId()));
             }
@@ -514,17 +514,18 @@ public class CustomerService {
     private List<GroupCompanyMemberRS> transformToCustomerGroupRS(List<GroupCompanyMember> customerGroups) {
         List<GroupCompanyMemberRS> customerGroupsRS = new ArrayList<>();
 
-        for (GroupCompanyMember group : customerGroups) {
-            GroupCompanyMemberRS groupRS = GroupCompanyMemberRS.builder()
-                    .groupCompanyId(group.getPK().getGroupCompanyId())
-                    .groupRoleId(group.getPK().getGroupRoleId())
-                    .customerId(group.getPK().getCustomerId())
-                    .state(group.getState())
-                    .creationDate(group.getCreationDate())
-                    .build();
-            customerGroupsRS.add(groupRS);
+        if (customerGroups != null && !customerGroups.isEmpty()) {
+            for (GroupCompanyMember group : customerGroups) {
+                GroupCompanyMemberRS groupRS = GroupCompanyMemberRS.builder()
+                        .groupCompanyId(group.getPK().getGroupCompanyId())
+                        .groupRoleId(group.getPK().getGroupRoleId())
+                        .customerId(group.getPK().getCustomerId())
+                        .state(group.getState())
+                        .creationDate(group.getCreationDate())
+                        .build();
+                customerGroupsRS.add(groupRS);
+            }
         }
-
         return customerGroupsRS;
     }
 
