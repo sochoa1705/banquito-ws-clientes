@@ -43,6 +43,12 @@ public class GroupCompany {
     @Column(name = "UNIQUE_KEY", length = 36)
     private String uniqueKey;
 
+    @Column(name = "TYPE_DOCUMENT_ID", nullable = false, length = 3)
+    private String typeDocumentId;
+
+    @Column(name = "DOCUMENT_ID", nullable = false, length = 20)
+    private String documentId;
+
     @Column(name = "GROUP_NAME", nullable = false, length = 200)
     private String groupName;
 

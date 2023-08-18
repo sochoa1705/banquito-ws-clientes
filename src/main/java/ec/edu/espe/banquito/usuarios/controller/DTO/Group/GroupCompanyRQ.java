@@ -10,6 +10,7 @@ import lombok.Data;
 public class GroupCompanyRQ {
 
     private String branchId;
+    private String documentId;
     private String locationId;
     private String groupName;
     private String emailAddress;
@@ -19,5 +20,9 @@ public class GroupCompanyRQ {
     private Float latitude;
     private Float longitude;
     private String comments;
+    private Boolean hasAccount;
+    private String accountHolderType;
+    private String accountAlias;
+    private Boolean allowOverdraft;
     private List<GroupCompanyMemberRQ> groupMembers;
 }

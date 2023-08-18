@@ -8,17 +8,21 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberUpdateRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyUpdateRQ;
+import ec.edu.espe.banquito.usuarios.model.Customer.Customer;
 import ec.edu.espe.banquito.usuarios.model.Group.GroupCompany;
 import ec.edu.espe.banquito.usuarios.model.Group.GroupCompanyMember;
 import ec.edu.espe.banquito.usuarios.model.Group.GroupCompanyMemberPK;
+import ec.edu.espe.banquito.usuarios.repository.CustomerRepository;
 import ec.edu.espe.banquito.usuarios.repository.GroupCompanyMemberRepository;
 import ec.edu.espe.banquito.usuarios.repository.GroupCompanyRepository;
+import ec.edu.espe.banquito.usuarios.service.ExternalRest.AccountRest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +32,8 @@ public class GroupCompanyService {
 
     private final GroupCompanyRepository groupCompanyRepository;
     private final GroupCompanyMemberRepository groupCompanyMemberRepository;
+    private final CustomerRepository customerRepository;
+    private final AccountRest accountRest;
 
     public List<GroupCompanyRS> getGroupCompanies() {
         List<GroupCompany> groupCompanies = groupCompanyRepository.findAll();
@@ -71,11 +77,20 @@ public class GroupCompanyService {
     public GroupCompanyRS create(GroupCompanyRQ groupCompanyRQ) {
         GroupCompany newGroupCompany = this.transformOfGroupCompanyRQ(groupCompanyRQ);
 
-        GroupCompany existsGroupCompany = groupCompanyRepository.findByEmailAddress(
+        if (newGroupCompany.getDocumentId().length() != 13) {
+            throw new RuntimeException("El ruc no es valido");
+        }
+
+        GroupCompany existsGroupCompany = groupCompanyRepository.findByDocumentIdOrEmailAddress(
+                newGroupCompany.getDocumentId(),
                 newGroupCompany.getEmailAddress());
 
-        if (existsGroupCompany != null) {
-            throw new RuntimeException("El correo ya fue registrado");
+        Customer existsCustomer = customerRepository.findByDocumentIdOrEmailAddress(
+                newGroupCompany.getDocumentId(),
+                newGroupCompany.getEmailAddress());
+
+        if (existsGroupCompany != null || existsCustomer != null) {
+            throw new RuntimeException("El ruc/correo ya fue registrado");
         }
 
         if (groupCompanyRQ.getGroupMembers() == null || groupCompanyRQ.getGroupMembers().isEmpty()) {
@@ -86,6 +101,16 @@ public class GroupCompanyService {
 
         groupCompany.setGroupMembers(
                 this.transformOfGroupCompanyMemberRQ(groupCompany.getId(), groupCompanyRQ.getGroupMembers()));
+
+        // Create account with rest service if needed
+        if (groupCompanyRQ.getHasAccount()) {
+            accountRest.sendAccountCreationRequest(
+                    groupCompanyRQ.getBranchId(),
+                    groupCompanyRQ.getAccountHolderType(),
+                    groupCompany.getUniqueKey(),
+                    groupCompanyRQ.getAccountAlias(),
+                    groupCompanyRQ.getAllowOverdraft());
+        }
 
         return this.transformToGroupCompanyRS(groupCompany);
 
@@ -168,6 +193,8 @@ public class GroupCompanyService {
     private GroupCompany transformOfGroupCompanyRQ(GroupCompanyRQ groupCompanyRQ) {
         GroupCompany groupCompany = GroupCompany.builder()
                 .branchId(groupCompanyRQ.getBranchId())
+                .typeDocumentId("RUC")
+                .documentId(groupCompanyRQ.getDocumentId())
                 .locationId(groupCompanyRQ.getLocationId())
                 .uniqueKey(UUID.randomUUID().toString())
                 .groupName(groupCompanyRQ.getGroupName())
@@ -185,6 +212,22 @@ public class GroupCompanyService {
                 .build();
 
         return groupCompany;
+    }
+
+    public GroupCompanyRS verifyAccountGroupCompany(String document) {
+        GroupCompany existsGroupCompany = groupCompanyRepository.findByDocumentId(document);
+
+        if (existsGroupCompany == null) {
+            throw new RuntimeException("La compania no existe");
+        }
+
+        Boolean existsAccount = accountRest.verifyIfHasAccount(existsGroupCompany.getUniqueKey());
+
+        if (existsAccount) {
+            throw new RuntimeException("La compania ya posee una cuenta");
+        }
+
+        return this.transformToGroupCompanyRS(existsGroupCompany);
     }
 
     private List<GroupCompanyMember> transformOfGroupCompanyMemberRQ(Integer groupCompanyId,

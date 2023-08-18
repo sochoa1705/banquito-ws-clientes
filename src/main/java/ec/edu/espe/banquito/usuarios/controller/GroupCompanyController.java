@@ -91,4 +91,15 @@ public class GroupCompanyController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping("verify/account/{document}")
+    public ResponseEntity<?> verifyAccountCustomer(@PathVariable String document) {
+        try {
+            return ResponseEntity.ok(groupCompanyService.verifyAccountGroupCompany(document));
+        } catch (RuntimeException rte) {
+            return ResponseEntity.badRequest().body(rte.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

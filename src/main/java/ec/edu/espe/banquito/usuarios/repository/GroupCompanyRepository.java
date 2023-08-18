@@ -8,7 +8,13 @@ import ec.edu.espe.banquito.usuarios.model.Group.GroupCompany;
 
 public interface GroupCompanyRepository extends JpaRepository<GroupCompany, Integer> {
 
+    GroupCompany findByEmailAddress(String email);
+
     GroupCompany findByGroupNameAndEmailAddress(String name, String email);
+    
+    GroupCompany findByDocumentIdOrEmailAddress(String document, String email);
+
+    GroupCompany findByDocumentId(String document);
 
     List<GroupCompany> findByBranchIdAndLocationIdAndState(String branch, String location, String status);
 
@@ -17,6 +23,4 @@ public interface GroupCompanyRepository extends JpaRepository<GroupCompany, Inte
     List<GroupCompany> findByBranchIdAndState(String branch, String status);
 
     List<GroupCompany> findByBranchId(String branch);
-
-    GroupCompany findByEmailAddress(String email);
 }

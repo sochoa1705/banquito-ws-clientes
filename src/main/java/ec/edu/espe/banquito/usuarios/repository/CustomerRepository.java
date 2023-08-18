@@ -12,6 +12,8 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
     Customer findByEmailAddress(String email);
 
+    Customer findByDocumentId(String documentId);
+
     List<Customer> findByStateAndBranchIdAndDocumentId(String state, String branchId, String document);
 
     List<Customer> findByStateAndBranchId(String state, String branchId);

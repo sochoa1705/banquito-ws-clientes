@@ -11,19 +11,20 @@ import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerUpdateRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberRS;
-import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberUpdateRQ;
 import ec.edu.espe.banquito.usuarios.model.Customer.Customer;
 import ec.edu.espe.banquito.usuarios.model.Customer.CustomerAddress;
 import ec.edu.espe.banquito.usuarios.model.Customer.CustomerPhone;
+import ec.edu.espe.banquito.usuarios.model.Group.GroupCompany;
 import ec.edu.espe.banquito.usuarios.model.Group.GroupCompanyMember;
 import ec.edu.espe.banquito.usuarios.model.Group.GroupCompanyMemberPK;
 import ec.edu.espe.banquito.usuarios.repository.CustomerAddressRepository;
 import ec.edu.espe.banquito.usuarios.repository.CustomerPhoneRepository;
 import ec.edu.espe.banquito.usuarios.repository.CustomerRepository;
 import ec.edu.espe.banquito.usuarios.repository.GroupCompanyMemberRepository;
+import ec.edu.espe.banquito.usuarios.repository.GroupCompanyRepository;
+import ec.edu.espe.banquito.usuarios.service.ExternalRest.AccountRest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class CustomerService {
 
@@ -42,6 +42,8 @@ public class CustomerService {
     private final CustomerPhoneRepository customerPhoneRepository;
     private final CustomerAddressRepository customerAddressRepository;
     private final GroupCompanyMemberRepository customerGroupCompanyMemberRepository;
+    private final GroupCompanyRepository groupCompanyRepository;
+    private final AccountRest accountRest;
 
     public List<CustomerRS> getCustomers() {
         List<Customer> customers = customerRepository.findAll();
@@ -90,7 +92,19 @@ public class CustomerService {
         // Transform CustomerRQ to Customer
         Customer newCustomer = this.transformCustomerRQ(customerRQ);
 
+        if (newCustomer.getDocumentId().length() != 10 && newCustomer.getTypeDocumentId() == "CID") {
+            throw new RuntimeException("La cedula no es valida");
+        } else if (newCustomer.getDocumentId().length() != 13 && newCustomer.getTypeDocumentId() == "RUC") {
+            throw new RuntimeException("El ruc no es valido");
+        } else if (newCustomer.getDocumentId().length() > 1 && newCustomer.getTypeDocumentId() == "PASS") {
+            throw new RuntimeException("El pasaporte no es valido");
+        }
+
         Customer existsCustomer = customerRepository.findByDocumentIdOrEmailAddress(
+                newCustomer.getDocumentId(),
+                newCustomer.getEmailAddress());
+
+        GroupCompany existsGroupCompany = groupCompanyRepository.findByDocumentIdOrEmailAddress(
                 newCustomer.getDocumentId(),
                 newCustomer.getEmailAddress());
 
@@ -104,7 +118,7 @@ public class CustomerService {
             }
         }
 
-        if (existsCustomer != null || existsPhoneNumber != null) {
+        if (existsCustomer != null || existsPhoneNumber != null || existsGroupCompany != null) {
             throw new RuntimeException("La cedula/correo/telefono ya fueron registrados");
         } else {
 
@@ -113,6 +127,16 @@ public class CustomerService {
             if (customerRQ.getGroupMember() != null && !customerRQ.getGroupMember().isEmpty()) {
                 customer.setGroupMember(
                         this.transformGroupCompanyMemberRQ(customerRQ.getGroupMember(), customer.getId()));
+            }
+
+            // Create account with rest service if needed
+            if (customerRQ.getHasAccount()) {
+                accountRest.sendAccountCreationRequest(
+                        customerRQ.getBranchId(),
+                        customerRQ.getAccountHolderType(),
+                        customer.getUniqueKey(),
+                        customerRQ.getAccountAlias(),
+                        customerRQ.getAllowOverdraft());
             }
 
             // Transform the updated Customer to CustomerRS before returning
@@ -134,7 +158,6 @@ public class CustomerService {
                     throw new RuntimeException("El correo electrónico ya se encuentra en uso");
                 }
             }
-
             // Transform CustomerUpdateRQ to Customer
             Customer customer = this.transformOfCustomerUpdateRQ(customerUpdateRQ);
 
@@ -209,6 +232,22 @@ public class CustomerService {
         } else {
             throw new RuntimeException("Usuario no encontrado");
         }
+    }
+
+    public CustomerRS verifyAccountCustomer(String document) {
+        Customer existsCustomer = customerRepository.findByDocumentId(document);
+
+        if (existsCustomer == null) {
+            throw new RuntimeException("El usuario no existe");
+        }
+
+        Boolean existsAccount = accountRest.verifyIfHasAccount(existsCustomer.getUniqueKey());
+
+        if (existsAccount) {
+            throw new RuntimeException("El usuario ya posee una cuenta");
+        }
+
+        return this.transformToCustomerRS(existsCustomer);
     }
 
     // CREATE REQUEST
