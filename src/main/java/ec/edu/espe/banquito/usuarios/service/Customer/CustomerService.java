@@ -1,5 +1,6 @@
 package ec.edu.espe.banquito.usuarios.service.Customer;
 
+import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerAccountRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerAddressRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerAddressRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerAddressUpdateRQ;
@@ -131,12 +132,14 @@ public class CustomerService {
 
             // Create account with rest service if needed
             if (customerRQ.getHasAccount()) {
+                String aliasAccount = customerRQ.getAccountAlias() == null ? customer.getFirstName() : customerRQ.getAccountAlias();
+
                 accountRest.sendAccountCreationRequest(
+                        customerRQ.getProductAccountId(),
                         customerRQ.getBranchId(),
-                        customerRQ.getAccountHolderType(),
+                        "CUS",
                         customer.getUniqueKey(),
-                        customerRQ.getAccountAlias(),
-                        customerRQ.getAllowOverdraft());
+                        aliasAccount);
             }
 
             // Transform the updated Customer to CustomerRS before returning
@@ -234,20 +237,21 @@ public class CustomerService {
         }
     }
 
-    public CustomerRS verifyAccountCustomer(String document) {
-        Customer existsCustomer = customerRepository.findByDocumentId(document);
+    public void assignAccountToCustomer(CustomerAccountRQ customerAccountRQ) {
+        Customer existsCustomer = customerRepository.findByDocumentId(customerAccountRQ.getDocumentId());
+        String aliasAccount = customerAccountRQ.getAccountAlias() == null ? existsCustomer.getFirstName() : customerAccountRQ.getAccountAlias();
 
         if (existsCustomer == null) {
             throw new RuntimeException("El usuario no existe");
         }
 
-        Boolean existsAccount = accountRest.verifyIfHasAccount(existsCustomer.getUniqueKey());
+        accountRest.sendAccountCreationRequest(
+                customerAccountRQ.getProductAccountId(),
+                existsCustomer.getBranchId(),
+                "CUS",
+                existsCustomer.getUniqueKey(),
+                aliasAccount);
 
-        if (existsAccount) {
-            throw new RuntimeException("El usuario ya posee una cuenta");
-        }
-
-        return this.transformToCustomerRS(existsCustomer);
     }
 
     // CREATE REQUEST

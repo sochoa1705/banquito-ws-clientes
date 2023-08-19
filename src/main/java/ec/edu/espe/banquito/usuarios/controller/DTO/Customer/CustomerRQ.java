@@ -21,9 +21,9 @@ public class CustomerRQ {
     private String emailAddress;
     private String comments;
     private Boolean hasAccount;
+    private String productAccountId;
     private String accountHolderType;
     private String accountAlias;
-    private Boolean allowOverdraft;
     private List<CustomerPhoneRQ> phones;
     private List<CustomerAddressRQ> addresses;
     private List<GroupCompanyMemberRQ> groupMember;

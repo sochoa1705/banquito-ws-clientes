@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
+import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyAccountRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyUpdateRQ;
@@ -92,10 +93,11 @@ public class GroupCompanyController {
         }
     }
 
-    @GetMapping("verify/account/{document}")
-    public ResponseEntity<?> verifyAccountCustomer(@PathVariable String document) {
+    @PostMapping("assign/account")
+    public ResponseEntity<?> assignAccountToGroupCompany(@RequestBody GroupCompanyAccountRQ groupCompanyAccountRQ) {
         try {
-            return ResponseEntity.ok(groupCompanyService.verifyAccountGroupCompany(document));
+            groupCompanyService.assignAccountToGroupCompany(groupCompanyAccountRQ);
+            return ResponseEntity.ok().body("Cuenta asignada");
         } catch (RuntimeException rte) {
             return ResponseEntity.badRequest().body(rte.getMessage());
         } catch (Exception e) {

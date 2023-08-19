@@ -1,5 +1,6 @@
 package ec.edu.espe.banquito.usuarios.controller;
 
+import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerAccountRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerUpdateRQ;
@@ -100,10 +101,11 @@ public class CustomerController {
         }
     }
 
-    @GetMapping("verify/account/{document}")
-    public ResponseEntity<?> verifyAccountCustomer(@PathVariable String document) {
+    @PostMapping("assign/account")
+    public ResponseEntity<?> verifyAccountCustomer(@RequestBody CustomerAccountRQ customerAccountRQ) {
         try {
-            return ResponseEntity.ok(customerService.verifyAccountCustomer(document));
+            customerService.assignAccountToCustomer(customerAccountRQ);
+            return ResponseEntity.ok().body("Cuenta asignada");
         } catch (RuntimeException rte) {
             return ResponseEntity.badRequest().body(rte.getMessage());
         } catch (Exception e) {

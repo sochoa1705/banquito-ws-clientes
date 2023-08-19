@@ -8,10 +8,9 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerRS;
+import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyAccountRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberRS;
-import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberUpdateRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyUpdateRQ;
@@ -104,12 +103,15 @@ public class GroupCompanyService {
 
         // Create account with rest service if needed
         if (groupCompanyRQ.getHasAccount()) {
+            String aliasAccount = groupCompanyRQ.getAccountAlias() == null ? groupCompany.getGroupName()
+                    : groupCompanyRQ.getAccountAlias();
+
             accountRest.sendAccountCreationRequest(
+                    groupCompanyRQ.getProductAccountId(),
                     groupCompanyRQ.getBranchId(),
-                    groupCompanyRQ.getAccountHolderType(),
+                    "GRO",
                     groupCompany.getUniqueKey(),
-                    groupCompanyRQ.getAccountAlias(),
-                    groupCompanyRQ.getAllowOverdraft());
+                    aliasAccount);
         }
 
         return this.transformToGroupCompanyRS(groupCompany);
@@ -189,6 +191,26 @@ public class GroupCompanyService {
         }
     }
 
+    public void assignAccountToGroupCompany(GroupCompanyAccountRQ groupCompanyAccountRQ) {
+        GroupCompany existsGroupCompany = groupCompanyRepository
+                .findByDocumentId(groupCompanyAccountRQ.getDocumentId());
+
+        String aliasAccount = groupCompanyAccountRQ.getAccountAlias() == null ? existsGroupCompany.getGroupName()
+                : groupCompanyAccountRQ.getAccountAlias();
+
+        if (existsGroupCompany == null) {
+            throw new RuntimeException("La compania no existe");
+        }
+
+        accountRest.sendAccountCreationRequest(
+                groupCompanyAccountRQ.getProductAccountId(),
+                existsGroupCompany.getBranchId(),
+                "GRO",
+                existsGroupCompany.getUniqueKey(),
+                aliasAccount);
+
+    }
+
     // CREATE REQUEST
     private GroupCompany transformOfGroupCompanyRQ(GroupCompanyRQ groupCompanyRQ) {
         GroupCompany groupCompany = GroupCompany.builder()
@@ -212,22 +234,6 @@ public class GroupCompanyService {
                 .build();
 
         return groupCompany;
-    }
-
-    public GroupCompanyRS verifyAccountGroupCompany(String document) {
-        GroupCompany existsGroupCompany = groupCompanyRepository.findByDocumentId(document);
-
-        if (existsGroupCompany == null) {
-            throw new RuntimeException("La compania no existe");
-        }
-
-        Boolean existsAccount = accountRest.verifyIfHasAccount(existsGroupCompany.getUniqueKey());
-
-        if (existsAccount) {
-            throw new RuntimeException("La compania ya posee una cuenta");
-        }
-
-        return this.transformToGroupCompanyRS(existsGroupCompany);
     }
 
     private List<GroupCompanyMember> transformOfGroupCompanyMemberRQ(Integer groupCompanyId,

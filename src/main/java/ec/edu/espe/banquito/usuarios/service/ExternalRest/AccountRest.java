@@ -19,18 +19,18 @@ public class AccountRest {
 
     private final RestTemplate restTemplate;
 
-    public void sendAccountCreationRequest(String branchId, String accountHolderType, String accountHolderCode, String accountAlias, Boolean allowOverdraft) {
+    public void sendAccountCreationRequest(String productAccountId, String branchId, String accountHolderType, String accountHolderCode, String accountAlias) {
         String url = "http://localhost:8080/api/v1/account";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, String> requestData = new HashMap<>();
+        requestData.put("productAccountId", productAccountId);
         requestData.put("branchId", branchId);
         requestData.put("accountHolderType", accountHolderType);
         requestData.put("accountHolderCode", accountHolderCode);
         requestData.put("accountAlias", accountAlias);
-        requestData.put("allowOverdraft", allowOverdraft.toString());
 
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestData, headers);
 
@@ -41,16 +41,4 @@ public class AccountRest {
         }
     }  
 
-    public Boolean verifyIfHasAccount(String accountHolderCode) {
-        String url = "http://localhost:8080/api/v1/account/verify/"+ accountHolderCode;
-
-        ResponseEntity<Boolean> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                Boolean.class
-        );
-
-        return response.getBody();
-    }  
 }

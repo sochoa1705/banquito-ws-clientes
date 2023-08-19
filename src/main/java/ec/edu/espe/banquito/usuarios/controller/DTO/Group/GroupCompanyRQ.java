@@ -21,8 +21,8 @@ public class GroupCompanyRQ {
     private Float longitude;
     private String comments;
     private Boolean hasAccount;
+    private String productAccountId;
     private String accountHolderType;
     private String accountAlias;
-    private Boolean allowOverdraft;
     private List<GroupCompanyMemberRQ> groupMembers;
 }
