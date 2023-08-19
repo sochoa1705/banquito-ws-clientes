@@ -47,6 +47,17 @@ public class GroupCompanyController {
         }
     }
 
+    @GetMapping("informationforaccount/{uniqueKey}")
+    public ResponseEntity<?> getGroupCompanyForAccountInformation(@PathVariable String uniqueKey) {
+        try {
+            return ResponseEntity.ok(groupCompanyService.getGroupCompanyForAccountInformation(uniqueKey));
+        } catch (RuntimeException rte) {
+            return ResponseEntity.badRequest().body(rte.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @GetMapping("/branchandlocationandstate")
     public ResponseEntity<List<GroupCompanyRS>> getGroupCompaniesByBranchAndLocationAndState(
             @RequestParam String branch,

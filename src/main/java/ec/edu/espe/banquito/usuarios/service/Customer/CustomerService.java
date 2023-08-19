@@ -1,6 +1,7 @@
 package ec.edu.espe.banquito.usuarios.service.Customer;
 
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerAccountRQ;
+import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerInformationAccountRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerAddressRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerAddressRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerAddressUpdateRQ;
@@ -23,7 +24,7 @@ import ec.edu.espe.banquito.usuarios.repository.CustomerPhoneRepository;
 import ec.edu.espe.banquito.usuarios.repository.CustomerRepository;
 import ec.edu.espe.banquito.usuarios.repository.GroupCompanyMemberRepository;
 import ec.edu.espe.banquito.usuarios.repository.GroupCompanyRepository;
-import ec.edu.espe.banquito.usuarios.service.ExternalRest.AccountRest;
+import ec.edu.espe.banquito.usuarios.service.ExternalRest.AccountRestService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -44,7 +45,7 @@ public class CustomerService {
     private final CustomerAddressRepository customerAddressRepository;
     private final GroupCompanyMemberRepository customerGroupCompanyMemberRepository;
     private final GroupCompanyRepository groupCompanyRepository;
-    private final AccountRest accountRest;
+    private final AccountRestService accountRestService;
 
     public List<CustomerRS> getCustomers() {
         List<Customer> customers = customerRepository.findAll();
@@ -54,6 +55,16 @@ public class CustomerService {
     public Optional<CustomerRS> getCustomer(Integer id) {
         Optional<Customer> optionalCustomer = customerRepository.findById(id);
         return optionalCustomer.map(this::transformToCustomerRS);
+    }
+
+    public CustomerInformationAccountRS getCustomerForAccountInformation (String uniqueKey) {
+        Customer customer = customerRepository.findByUniqueKey(uniqueKey);
+
+        if (customer == null) {
+             throw new RuntimeException("El usuario no existe");
+        }
+
+        return this.transformToCustomerInformationAccountRS(customer);
     }
 
     public List<CustomerRS> getCustomersByStatusAndBranchAndDocument(
@@ -134,7 +145,7 @@ public class CustomerService {
             if (customerRQ.getHasAccount()) {
                 String aliasAccount = customerRQ.getAccountAlias() == null ? customer.getFirstName() : customerRQ.getAccountAlias();
 
-                accountRest.sendAccountCreationRequest(
+                accountRestService.sendAccountCreationRequest(
                         customerRQ.getProductAccountId(),
                         customerRQ.getBranchId(),
                         "CUS",
@@ -245,7 +256,7 @@ public class CustomerService {
             throw new RuntimeException("El usuario no existe");
         }
 
-        accountRest.sendAccountCreationRequest(
+        accountRestService.sendAccountCreationRequest(
                 customerAccountRQ.getProductAccountId(),
                 existsCustomer.getBranchId(),
                 "CUS",
@@ -515,6 +526,20 @@ public class CustomerService {
                 .build();
 
         return customerRS;
+    }
+
+    private CustomerInformationAccountRS transformToCustomerInformationAccountRS(Customer customer) {
+        CustomerInformationAccountRS customerAccountRS = CustomerInformationAccountRS.builder()
+                .typeDocumentId(customer.getTypeDocumentId())
+                .documentId(customer.getDocumentId())
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .gender(customer.getGender())
+                .birthDate(customer.getBirthDate())
+                .emailAddress(customer.getEmailAddress())
+                .build();
+
+        return customerAccountRS;
     }
 
     private List<CustomerPhoneRS> transformToCustomerPhoneRS(List<CustomerPhone> customerPhones) {

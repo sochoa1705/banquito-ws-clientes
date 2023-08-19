@@ -16,6 +16,8 @@ public interface GroupCompanyRepository extends JpaRepository<GroupCompany, Inte
 
     GroupCompany findByDocumentId(String document);
 
+    GroupCompany findByUniqueKey(String uniqueKey);
+
     List<GroupCompany> findByBranchIdAndLocationIdAndState(String branch, String location, String status);
 
     List<GroupCompany> findByBranchIdAndLocationId(String branch, String location);

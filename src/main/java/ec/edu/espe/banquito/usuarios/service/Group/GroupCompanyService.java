@@ -8,7 +8,9 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import ec.edu.espe.banquito.usuarios.controller.DTO.Customer.CustomerInformationAccountRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyAccountRQ;
+import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyInformationAccountRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberRQ;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyMemberRS;
 import ec.edu.espe.banquito.usuarios.controller.DTO.Group.GroupCompanyRQ;
@@ -21,7 +23,7 @@ import ec.edu.espe.banquito.usuarios.model.Group.GroupCompanyMemberPK;
 import ec.edu.espe.banquito.usuarios.repository.CustomerRepository;
 import ec.edu.espe.banquito.usuarios.repository.GroupCompanyMemberRepository;
 import ec.edu.espe.banquito.usuarios.repository.GroupCompanyRepository;
-import ec.edu.espe.banquito.usuarios.service.ExternalRest.AccountRest;
+import ec.edu.espe.banquito.usuarios.service.ExternalRest.AccountRestService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -32,7 +34,7 @@ public class GroupCompanyService {
     private final GroupCompanyRepository groupCompanyRepository;
     private final GroupCompanyMemberRepository groupCompanyMemberRepository;
     private final CustomerRepository customerRepository;
-    private final AccountRest accountRest;
+    private final AccountRestService accountRestService;
 
     public List<GroupCompanyRS> getGroupCompanies() {
         List<GroupCompany> groupCompanies = groupCompanyRepository.findAll();
@@ -42,6 +44,16 @@ public class GroupCompanyService {
     public Optional<GroupCompanyRS> getGroupCompany(Integer groupCompanyId) {
         Optional<GroupCompany> optionalGroupCompany = groupCompanyRepository.findById(groupCompanyId);
         return optionalGroupCompany.map(this::transformToGroupCompanyRS);
+    }
+
+    public GroupCompanyInformationAccountRS getGroupCompanyForAccountInformation (String uniqueKey) {
+        GroupCompany groupCompany = groupCompanyRepository.findByUniqueKey(uniqueKey);
+
+        if (groupCompany == null) {
+             throw new RuntimeException("La compania no existe");
+        }
+
+        return this.transformToGroupCompanyInformationAccountRS(groupCompany);
     }
 
     public List<GroupCompanyRS> getGroupCompaniesByBranchAndLocationAndState(
@@ -106,7 +118,7 @@ public class GroupCompanyService {
             String aliasAccount = groupCompanyRQ.getAccountAlias() == null ? groupCompany.getGroupName()
                     : groupCompanyRQ.getAccountAlias();
 
-            accountRest.sendAccountCreationRequest(
+            accountRestService.sendAccountCreationRequest(
                     groupCompanyRQ.getProductAccountId(),
                     groupCompanyRQ.getBranchId(),
                     "GRO",
@@ -202,7 +214,7 @@ public class GroupCompanyService {
             throw new RuntimeException("La compania no existe");
         }
 
-        accountRest.sendAccountCreationRequest(
+        accountRestService.sendAccountCreationRequest(
                 groupCompanyAccountRQ.getProductAccountId(),
                 existsGroupCompany.getBranchId(),
                 "GRO",
@@ -320,6 +332,18 @@ public class GroupCompanyService {
                 .build();
 
         return groupCompanyRS;
+    }
+
+    private GroupCompanyInformationAccountRS transformToGroupCompanyInformationAccountRS(GroupCompany groupCompany) {
+        GroupCompanyInformationAccountRS groupCompanyInformationAccountRS = GroupCompanyInformationAccountRS.builder()
+                .groupName(groupCompany.getGroupName())
+                .emailAddress(groupCompany.getEmailAddress())
+                .phoneNumber(groupCompany.getPhoneNumber())
+                .line1(groupCompany.getLine1())
+                .line2(groupCompany.getLine2())
+                .build();
+
+        return groupCompanyInformationAccountRS;
     }
 
     private List<GroupCompanyMemberRS> transformToGroupCompanyMemberRS(List<GroupCompanyMember> groupMembers) {

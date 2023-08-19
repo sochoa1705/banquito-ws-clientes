@@ -14,6 +14,8 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
     Customer findByDocumentId(String documentId);
 
+    Customer findByUniqueKey(String uniqueKey);
+
     List<Customer> findByStateAndBranchIdAndDocumentId(String state, String branchId, String document);
 
     List<Customer> findByStateAndBranchId(String state, String branchId);

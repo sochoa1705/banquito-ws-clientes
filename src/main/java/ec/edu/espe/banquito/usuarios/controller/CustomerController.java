@@ -47,6 +47,17 @@ public class CustomerController {
         }
     }
 
+    @GetMapping("informationforaccount/{uniqueKey}")
+    public ResponseEntity<?> getCustomerForAccountInformation(@PathVariable String uniqueKey) {
+        try {
+            return ResponseEntity.ok(customerService.getCustomerForAccountInformation(uniqueKey));
+        } catch (RuntimeException rte) {
+            return ResponseEntity.badRequest().body(rte.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @GetMapping("/statusanddocumentandbranch")
     public ResponseEntity<List<CustomerRS>> getCustomersByStatusAndBranchAndDocument(
             @RequestParam(required = false) String document,
@@ -92,7 +103,6 @@ public class CustomerController {
     @PutMapping
     public ResponseEntity<?> update(@RequestBody CustomerUpdateRQ customer) {
         try {
-
             return ResponseEntity.ok(customerService.update(customer));
         } catch (RuntimeException rte) {
             return ResponseEntity.badRequest().body(rte.getMessage());
@@ -102,7 +112,7 @@ public class CustomerController {
     }
 
     @PostMapping("assign/account")
-    public ResponseEntity<?> verifyAccountCustomer(@RequestBody CustomerAccountRQ customerAccountRQ) {
+    public ResponseEntity<?> assignAccountToCustomer(@RequestBody CustomerAccountRQ customerAccountRQ) {
         try {
             customerService.assignAccountToCustomer(customerAccountRQ);
             return ResponseEntity.ok().body("Cuenta asignada");

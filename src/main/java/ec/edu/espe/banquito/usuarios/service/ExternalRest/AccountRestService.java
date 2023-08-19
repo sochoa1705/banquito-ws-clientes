@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AccountRest {
+public class AccountRestService {
 
     private final RestTemplate restTemplate;
 
