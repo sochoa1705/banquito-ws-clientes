@@ -185,6 +185,7 @@ public class GroupCompanyService {
 
             switch (groupCompany.getState()) {
                 case "ACT":
+                    groupCompanyTmp.setState(groupCompany.getState());
                     break;
                 case "SUS":
                 case "BLO":
@@ -197,6 +198,8 @@ public class GroupCompanyService {
             }
 
             GroupCompany newGroupCompany = groupCompanyRepository.save(groupCompanyTmp);
+            // Update state of accounts depends on this state
+            accountRestService.sendUpdateStateAccountRequest(groupCompany.getUniqueKey(), groupCompany.getState());
             return this.transformToGroupCompanyRS(newGroupCompany);
         } else {
             throw new RuntimeException("Compania no encontrada");

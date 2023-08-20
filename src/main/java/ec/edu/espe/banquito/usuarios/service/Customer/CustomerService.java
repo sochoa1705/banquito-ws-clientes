@@ -228,6 +228,7 @@ public class CustomerService {
 
             switch (customer.getState()) {
                 case "ACT":
+                    customerTmp.setState(customer.getState());
                     break;
                 case "SUS":
                 case "BLO":
@@ -240,7 +241,8 @@ public class CustomerService {
             }
 
             customerRepository.save(customerTmp);
-
+            // Update state of accounts depends on this state
+            accountRestService.sendUpdateStateAccountRequest(customer.getUniqueKey(), customer.getState());
             // Transform the updated Customer to CustomerRS before returning
             return this.transformToCustomerRS(customerTmp);
         } else {
