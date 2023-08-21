@@ -42,7 +42,7 @@ public class AccountRestService {
     }  
 
     public void sendUpdateStateAccountRequest(String accountHolderCode, String state) {
-        String url = "http://localhost:8080/api/v1/account/state";
+        String url = "https://banquito-ws-cuentas-ntsumodxxq-uc.a.run.app/api/v1/account/state";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
