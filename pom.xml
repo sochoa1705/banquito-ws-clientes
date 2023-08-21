@@ -8,12 +8,12 @@
 		<version>3.1.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>ec.edu.espe.banquito</groupId>
-	<artifactId>usuarios</artifactId>
+	<groupId>ec.edu.espe.arquitectura</groupId>
+	<artifactId>ws-usuarios</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>usuarios</name>
-	<description>Demo project for Spring Boot</description>
+	<name>ws-usuarios</name>
+	<description>ws-usuarios</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
