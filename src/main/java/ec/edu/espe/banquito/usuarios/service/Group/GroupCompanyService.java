@@ -146,7 +146,7 @@ public class GroupCompanyService {
             }
 
             // Transform GroupCompanyUpdateRQ to GroupCompany
-            GroupCompany groupCompany = this.transformOfCustomerUpdateRQ(groupCompanyUpdateRQ);
+            GroupCompany groupCompany = transformOfCustomerUpdateRQ(groupCompanyUpdateRQ);
 
             groupCompanyTmp.setBranchId(groupCompany.getBranchId());
             groupCompanyTmp.setLocationId(groupCompany.getLocationId());
@@ -199,8 +199,8 @@ public class GroupCompanyService {
 
             GroupCompany newGroupCompany = groupCompanyRepository.save(groupCompanyTmp);
             // Update state of accounts depends on this state
-            accountRestService.sendUpdateStateAccountRequest(groupCompany.getUniqueKey(), groupCompany.getState());
-            return this.transformToGroupCompanyRS(newGroupCompany);
+            accountRestService.sendUpdateStateAccountRequest(groupCompanyTmp.getUniqueKey(), groupCompany.getState());
+            return transformToGroupCompanyRS(newGroupCompany);
         } else {
             throw new RuntimeException("Compania no encontrada");
         }

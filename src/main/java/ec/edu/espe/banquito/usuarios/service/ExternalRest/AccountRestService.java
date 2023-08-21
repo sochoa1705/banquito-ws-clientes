@@ -43,21 +43,40 @@ public class AccountRestService {
 
     public void sendUpdateStateAccountRequest(String accountHolderCode, String state) {
         String url = "http://localhost:8080/api/v1/account/state";
-    
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-    
+
         Map<String, String> requestData = new HashMap<>();
         requestData.put("accountHolderCode", accountHolderCode);
         requestData.put("state", state);
-    
+
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestData, headers);
-    
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
-    
+
+        ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
+
         if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("Error al actualizar el estado de la cuenta en el servicio externo");
+            throw new RuntimeException("Error al crear la cuenta en el servicio externo");
         }
-    }
+    } 
+
+    // public void sendUpdateStateAccountRequest(String accountHolderCode, String state) {
+    //     String url = "http://localhost:8080/api/v1/account/state";
+    
+    //     HttpHeaders headers = new HttpHeaders();
+    //     headers.setContentType(MediaType.APPLICATION_JSON);
+    
+    //     Map<String, String> requestData = new HashMap<>();
+    //     requestData.put("accountHolderCode", accountHolderCode);
+    //     requestData.put("state", state);
+    
+    //     HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestData, headers);
+    
+    //     ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
+    
+    //     if (!response.getStatusCode().is2xxSuccessful()) {
+    //         throw new RuntimeException("Error al actualizar el estado de la cuenta en el servicio externo");
+    //     }
+    // }
 
 }

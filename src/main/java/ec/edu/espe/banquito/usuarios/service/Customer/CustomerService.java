@@ -57,11 +57,11 @@ public class CustomerService {
         return optionalCustomer.map(this::transformToCustomerRS);
     }
 
-    public CustomerInformationAccountRS getCustomerForAccountInformation (String uniqueKey) {
+    public CustomerInformationAccountRS getCustomerForAccountInformation(String uniqueKey) {
         Customer customer = customerRepository.findByUniqueKey(uniqueKey);
 
         if (customer == null) {
-             throw new RuntimeException("El usuario no existe");
+            throw new RuntimeException("El usuario no existe");
         }
 
         return this.transformToCustomerInformationAccountRS(customer);
@@ -143,7 +143,8 @@ public class CustomerService {
 
             // Create account with rest service if needed
             if (customerRQ.getHasAccount()) {
-                String aliasAccount = customerRQ.getAccountAlias() == null ? customer.getFirstName() : customerRQ.getAccountAlias();
+                String aliasAccount = customerRQ.getAccountAlias() == null ? customer.getFirstName()
+                        : customerRQ.getAccountAlias();
 
                 accountRestService.sendAccountCreationRequest(
                         customerRQ.getProductAccountId(),
@@ -242,9 +243,9 @@ public class CustomerService {
 
             customerRepository.save(customerTmp);
             // Update state of accounts depends on this state
-            accountRestService.sendUpdateStateAccountRequest(customer.getUniqueKey(), customer.getState());
+            accountRestService.sendUpdateStateAccountRequest(customerTmp.getUniqueKey(), customer.getState());
             // Transform the updated Customer to CustomerRS before returning
-            return this.transformToCustomerRS(customerTmp);
+            return transformToCustomerRS(customerTmp);
         } else {
             throw new RuntimeException("Usuario no encontrado");
         }
@@ -252,7 +253,8 @@ public class CustomerService {
 
     public void assignAccountToCustomer(CustomerAccountRQ customerAccountRQ) {
         Customer existsCustomer = customerRepository.findByDocumentId(customerAccountRQ.getDocumentId());
-        String aliasAccount = customerAccountRQ.getAccountAlias() == null ? existsCustomer.getFirstName() : customerAccountRQ.getAccountAlias();
+        String aliasAccount = customerAccountRQ.getAccountAlias() == null ? existsCustomer.getFirstName()
+                : customerAccountRQ.getAccountAlias();
 
         if (existsCustomer == null) {
             throw new RuntimeException("El usuario no existe");
