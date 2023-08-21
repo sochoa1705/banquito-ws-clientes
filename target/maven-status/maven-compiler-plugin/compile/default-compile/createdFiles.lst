@@ -1,9 +1,6 @@
 ec\edu\espe\arquitectura\wsusuarios\controller\DTO\Customer\CustomerAddressUpdateRQ.class
-ec\edu\espe\arquitectura\wsusuarios\controller\GroupCompanyController.class
 ec\edu\espe\arquitectura\wsusuarios\controller\DTO\Customer\CustomerPhoneRS$CustomerPhoneRSBuilder.class
-ec\edu\espe\arquitectura\wsusuarios\service\ExternalRestServices\AccountRestService.class
 ec\edu\espe\arquitectura\wsusuarios\controller\DTO\Group\GroupCompanyRQ.class
-ec\edu\espe\arquitectura\wsusuarios\controller\CustomerController.class
 ec\edu\espe\arquitectura\wsusuarios\controller\DTO\Group\GroupCompanyMemberRQ$GroupCompanyMemberRQBuilder.class
 ec\edu\espe\arquitectura\wsusuarios\controller\GroupCompanyMemberController.class
 ec\edu\espe\arquitectura\wsusuarios\model\Group\GroupRole$GroupRoleBuilder.class
@@ -39,8 +36,6 @@ ec\edu\espe\arquitectura\wsusuarios\model\Customer\CustomerPhone.class
 ec\edu\espe\arquitectura\wsusuarios\service\Group\GroupCompanyMemberService.class
 ec\edu\espe\arquitectura\wsusuarios\model\Customer\Customer.class
 ec\edu\espe\arquitectura\wsusuarios\repository\CustomerAddressRepository.class
-ec\edu\espe\arquitectura\wsusuarios\service\Customer\CustomerService.class
-ec\edu\espe\arquitectura\wsusuarios\service\Group\GroupCompanyService.class
 ec\edu\espe\arquitectura\wsusuarios\controller\DTO\Customer\CustomerRQ.class
 ec\edu\espe\arquitectura\wsusuarios\controller\DTO\Group\GroupCompanyMemberRS$GroupCompanyMemberRSBuilder.class
 ec\edu\espe\arquitectura\wsusuarios\model\Group\GroupCompanyMember$GroupCompanyMemberBuilder.class
