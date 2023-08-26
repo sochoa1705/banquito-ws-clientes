@@ -58,6 +58,15 @@ public class GroupCompanyController {
         }
     }
 
+    @GetMapping("/typedocumentanddocument")
+    public ResponseEntity<List<GroupCompanyRS>> getGroupCompaniesByTypeDocumentAndDocument(
+            @RequestParam String typeDocument,
+            @RequestParam String document) {
+
+        List<GroupCompanyRS> groupCompanies = groupCompanyService.getGroupCompaniesByTypeDocumentAndDocument(typeDocument, document);
+        return ResponseEntity.ok(groupCompanies);
+    }
+
     @GetMapping("/branchandlocationandstate")
     public ResponseEntity<List<GroupCompanyRS>> getGroupCompaniesByBranchAndLocationAndState(
             @RequestParam String branch,
@@ -107,8 +116,7 @@ public class GroupCompanyController {
     @PostMapping("assign/account")
     public ResponseEntity<?> assignAccountToGroupCompany(@RequestBody GroupCompanyAccountRQ groupCompanyAccountRQ) {
         try {
-            groupCompanyService.assignAccountToGroupCompany(groupCompanyAccountRQ);
-            return ResponseEntity.ok().body("Cuenta asignada");
+            return ResponseEntity.ok(groupCompanyService.assignAccountToGroupCompany(groupCompanyAccountRQ));
         } catch (RuntimeException rte) {
             return ResponseEntity.badRequest().body(rte.getMessage());
         } catch (Exception e) {

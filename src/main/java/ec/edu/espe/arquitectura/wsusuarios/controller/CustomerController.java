@@ -114,8 +114,7 @@ public class CustomerController {
     @PostMapping("assign/account")
     public ResponseEntity<?> assignAccountToCustomer(@RequestBody CustomerAccountRQ customerAccountRQ) {
         try {
-            customerService.assignAccountToCustomer(customerAccountRQ);
-            return ResponseEntity.ok().body("Cuenta asignada");
+            return ResponseEntity.ok(customerService.assignAccountToCustomer(customerAccountRQ));
         } catch (RuntimeException rte) {
             return ResponseEntity.badRequest().body(rte.getMessage());
         } catch (Exception e) {

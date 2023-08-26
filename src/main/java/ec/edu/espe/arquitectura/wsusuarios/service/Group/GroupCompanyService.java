@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import ec.edu.espe.arquitectura.wsusuarios.controller.DTO.Customer.CustomerInformationAccountRS;
 import ec.edu.espe.arquitectura.wsusuarios.controller.DTO.Group.GroupCompanyAccountRQ;
 import ec.edu.espe.arquitectura.wsusuarios.controller.DTO.Group.GroupCompanyInformationAccountRS;
 import ec.edu.espe.arquitectura.wsusuarios.controller.DTO.Group.GroupCompanyMemberRQ;
@@ -17,6 +16,7 @@ import ec.edu.espe.arquitectura.wsusuarios.controller.DTO.Group.GroupCompanyRQ;
 import ec.edu.espe.arquitectura.wsusuarios.controller.DTO.Group.GroupCompanyRS;
 import ec.edu.espe.arquitectura.wsusuarios.controller.DTO.Group.GroupCompanyUpdateRQ;
 import ec.edu.espe.arquitectura.wsusuarios.model.Customer.Customer;
+import ec.edu.espe.arquitectura.wsusuarios.model.ExternalRestModels.AccountRestRS;
 import ec.edu.espe.arquitectura.wsusuarios.model.Group.GroupCompany;
 import ec.edu.espe.arquitectura.wsusuarios.model.Group.GroupCompanyMember;
 import ec.edu.espe.arquitectura.wsusuarios.model.Group.GroupCompanyMemberPK;
@@ -32,7 +32,6 @@ import lombok.RequiredArgsConstructor;
 public class GroupCompanyService {
 
     private final GroupCompanyRepository groupCompanyRepository;
-    private final GroupCompanyMemberRepository groupCompanyMemberRepository;
     private final CustomerRepository customerRepository;
     private final AccountRestService accountRestService;
 
@@ -81,6 +80,11 @@ public class GroupCompanyService {
 
     public List<GroupCompanyRS> getGroupCompaniesByBranch(String branch) {
         List<GroupCompany> groupCompanies = groupCompanyRepository.findByBranchId(branch);
+        return this.transformToListGroupCompanyRS(groupCompanies);
+    }
+
+    public List<GroupCompanyRS> getGroupCompaniesByTypeDocumentAndDocument(String typeDocument, String document) {
+        List<GroupCompany> groupCompanies = groupCompanyRepository.findByTypeDocumentIdAndDocumentId(typeDocument, document);
         return this.transformToListGroupCompanyRS(groupCompanies);
     }
 
@@ -206,7 +210,7 @@ public class GroupCompanyService {
         }
     }
 
-    public void assignAccountToGroupCompany(GroupCompanyAccountRQ groupCompanyAccountRQ) {
+    public AccountRestRS assignAccountToGroupCompany(GroupCompanyAccountRQ groupCompanyAccountRQ) {
         GroupCompany existsGroupCompany = groupCompanyRepository
                 .findByDocumentId(groupCompanyAccountRQ.getDocumentId());
 
@@ -217,7 +221,7 @@ public class GroupCompanyService {
             throw new RuntimeException("La compania no existe");
         }
 
-        accountRestService.sendAccountCreationRequest(
+        return accountRestService.sendAccountCreationRequest(
                 groupCompanyAccountRQ.getProductAccountId(),
                 existsGroupCompany.getBranchId(),
                 "GRO",

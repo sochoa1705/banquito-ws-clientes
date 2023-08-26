@@ -16,6 +16,7 @@ import ec.edu.espe.arquitectura.wsusuarios.controller.DTO.Group.GroupCompanyMemb
 import ec.edu.espe.arquitectura.wsusuarios.model.Customer.Customer;
 import ec.edu.espe.arquitectura.wsusuarios.model.Customer.CustomerAddress;
 import ec.edu.espe.arquitectura.wsusuarios.model.Customer.CustomerPhone;
+import ec.edu.espe.arquitectura.wsusuarios.model.ExternalRestModels.AccountRestRS;
 import ec.edu.espe.arquitectura.wsusuarios.model.Group.GroupCompany;
 import ec.edu.espe.arquitectura.wsusuarios.model.Group.GroupCompanyMember;
 import ec.edu.espe.arquitectura.wsusuarios.model.Group.GroupCompanyMemberPK;
@@ -251,7 +252,7 @@ public class CustomerService {
         }
     }
 
-    public void assignAccountToCustomer(CustomerAccountRQ customerAccountRQ) {
+    public AccountRestRS assignAccountToCustomer(CustomerAccountRQ customerAccountRQ) {
         Customer existsCustomer = customerRepository.findByDocumentId(customerAccountRQ.getDocumentId());
         String aliasAccount = customerAccountRQ.getAccountAlias() == null ? existsCustomer.getFirstName()
                 : customerAccountRQ.getAccountAlias();
@@ -260,7 +261,7 @@ public class CustomerService {
             throw new RuntimeException("El usuario no existe");
         }
 
-        accountRestService.sendAccountCreationRequest(
+        return accountRestService.sendAccountCreationRequest(
                 customerAccountRQ.getProductAccountId(),
                 existsCustomer.getBranchId(),
                 "CUS",
