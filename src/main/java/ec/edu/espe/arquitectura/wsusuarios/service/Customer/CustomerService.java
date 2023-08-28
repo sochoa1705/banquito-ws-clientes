@@ -271,7 +271,7 @@ public class CustomerService {
     }
 
     // CREATE REQUEST
-    private Customer transformCustomerRQ(CustomerRQ customerRQ) {
+    public Customer transformCustomerRQ(CustomerRQ customerRQ) {
         Customer customer = Customer.builder()
                 .branchId(customerRQ.getBranchId())
                 .uniqueKey(UUID.randomUUID().toString())
