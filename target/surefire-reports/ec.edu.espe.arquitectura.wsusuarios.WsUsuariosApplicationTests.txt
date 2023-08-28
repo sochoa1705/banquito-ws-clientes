@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: ec.edu.espe.arquitectura.wsusuarios.WsUsuariosApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 18.235 s - in ec.edu.espe.arquitectura.wsusuarios.WsUsuariosApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 18.013 s - in ec.edu.espe.arquitectura.wsusuarios.WsUsuariosApplicationTests
